@@ -24,7 +24,7 @@
         .question.active {
             display: block;
         }
-        label{
+        label {
             margin-top: 3px;
         }
         button {
@@ -52,14 +52,33 @@
             margin-top: 20px;
             color: #555;
         }
+        .home-container {
+            text-align: center;
+        }
+        .slider-label {
+            display: block;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div id="homeContainer" class="home-container">
+            <h1>Welcome to the Exam</h1>
+            <label class="slider-label">Select number of True/False questions:</label>
+            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">1</span>
+            <br>
+            <label class="slider-label">Select number of Multiple Choice questions:</label>
+            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">1</span>
+            <br>
+            <button onclick="startExam()">Start the Exam</button>
+        </div>
         <div id="questionsContainer"></div>
-        <button id="prevBtn" onclick="prevQuestion()">Previous</button>
-        <button id="nextBtn" onclick="nextQuestion()">Next</button>
-        <button id="submitBtn" onclick="submitExam()">Submit</button>
+        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
         <div id="resultContainer"></div>
     </div>
     <footer>Developed by Badr El sheshtawy</footer>
@@ -170,13 +189,29 @@ const questions = [
  
 
 
+
+
         let currentQuestionIndex = 0;
-        let userAnswers = new Array(questions.length).fill(null);
+        let userAnswers = [];
+        let selectedTFCount = 0;
+        let selectedMCCount = 0;
+        let selectedQuestions = [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            updateRangeValues();
             shuffleQuestions();
-            displayQuestion();
         });
+
+        function updateRangeValues() {
+            const tfRange = document.getElementById('tfCount');
+            const mcRange = document.getElementById('mcCount');
+            tfRange.max = questions.filter(q => q.type === 'tf').length;
+            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        }
+
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
 
         function shuffleQuestions() {
             for (let i = questions.length - 1; i > 0; i--) {
@@ -185,10 +220,28 @@ const questions = [
             }
         }
 
+        function startExam() {
+            selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            selectedMCCount = parseInt(document.getElementById('mcCount').value);
+            selectedQuestions = getSelectedQuestions();
+            userAnswers = new Array(selectedQuestions.length).fill(null);
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            displayQuestion();
+        }
+
+        function getSelectedQuestions() {
+            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
+            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
+            return [...tfQuestions, ...mcQuestions];
+        }
+
         function displayQuestion() {
             const container = document.getElementById('questionsContainer');
             container.innerHTML = '';
-            const questionObj = questions[currentQuestionIndex];
+            const questionObj = selectedQuestions[currentQuestionIndex];
             const questionElement = document.createElement('div');
             questionElement.classList.add('question', 'active');
             questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
@@ -205,8 +258,12 @@ const questions = [
                     `;
                 });
             }
-
             container.appendChild(questionElement);
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) selectedOption.checked = true;
+            }
         }
 
         function prevQuestion() {
@@ -218,7 +275,7 @@ const questions = [
         }
 
         function nextQuestion() {
-            if (currentQuestionIndex < questions.length - 1) {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
                 saveAnswer();
                 currentQuestionIndex++;
                 displayQuestion();
@@ -226,42 +283,49 @@ const questions = [
         }
 
         function saveAnswer() {
-            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-            if (selectedAnswer) {
-                userAnswers[currentQuestionIndex] = selectedAnswer.value;
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
             }
         }
 
         function submitExam() {
             saveAnswer();
-            let correctCount = 0;
-            const incorrectAnswers = [];
-            questions.forEach((question, index) => {
+            let score = 0;
+            let correctAnswers = [];
+            selectedQuestions.forEach((question, index) => {
                 if (userAnswers[index] === question.answer) {
-                    correctCount++;
+                    score++;
                 } else {
-                    incorrectAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
+                    correctAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
                 }
             });
-            displayResults(correctCount, incorrectAnswers);
-        }
 
-        function displayResults(correctCount, incorrectAnswers) {
             const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = `<p>You got ${correctCount} out of ${questions.length} questions correct.</p>`;
-            
-            if (incorrectAnswers.length > 0) {
-                resultContainer.innerHTML += '<h3>Incorrect Answers:</h3>';
-                incorrectAnswers.forEach(item => {
-                    const resultDiv = document.createElement('div');
-                    resultDiv.classList.add('result');
-                    resultDiv.innerHTML = `<p>Question: ${item.question}</p>
-                                           <p>Your Answer: ${item.userAnswer || 'No answer'}</p>
-                                           <p>Correct Answer: ${item.correctAnswer}</p>`;
-                    resultContainer.appendChild(resultDiv);
+            resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+
+            if (score === selectedQuestions.length) {
+                resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
+            } else {
+                correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
+                    resultContainer.innerHTML += `
+                        <div class="result">
+                            <p>Question: ${question}</p>
+                            <p>Correct Answer: ${correctAnswer}</p>
+                            <p>Your Answer: ${userAnswer}</p>
+                        </div>
+                    `;
                 });
             }
+
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('homeContainer').style.display = 'block';
         }
     </script>
 </body>
 </html>
+
+
+
