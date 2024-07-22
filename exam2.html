@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Requirements Exam</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        label{
+            margin-top: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #resultContainer {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="questionsContainer"></div>
+        <button id="prevBtn" onclick="prevQuestion()">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+        <button id="submitBtn" onclick="submitExam()">Submit</button>
+        <div id="resultContainer"></div>
+    </div>
+    <footer>Developed by Badr El sheshtawy</footer>
+
+    <script>
+const questions = [
+    // True/False Questions
+    { type: 'tf', question: 'Requirements engineering is primarily concerned with software design.', answer: 'F' },
+    { type: 'tf', question: 'Functional requirements describe what the system should do.', answer: 'T' },
+    { type: 'tf', question: 'Non-functional requirements specify how the system performs a certain function.', answer: 'T' },
+    { type: 'tf', question: 'User requirements are high-level statements of what the system should achieve.', answer: 'T' },
+    { type: 'tf', question: 'Interface requirements define how the system interacts with other systems.', answer: 'T' },
+    { type: 'tf', question: 'Constraints limit the options available to the developers.', answer: 'T' },
+    { type: 'tf', question: 'The scope of requirements should be kept as broad as possible.', answer: 'F' },
+    { type: 'tf', question: 'Requirements traceability is the ability to link requirements to related artifacts.', answer: 'T' },
+    { type: 'tf', question: 'Requirement validation ensures that the requirements are correct and complete.', answer: 'T' },
+    { type: 'tf', question: 'Requirement verification is the process of checking that the system meets the requirements.', answer: 'T' },
+    { type: 'tf', question: 'The term "requirements creep" refers to unplanned changes in the requirements.', answer: 'T' },
+    { type: 'tf', question: 'A requirement is considered "testable" if there is a feasible way to check it.', answer: 'T' },
+    { type: 'tf', question: 'Stakeholder analysis identifies the interests of various stakeholders.', answer: 'T' },
+    { type: 'tf', question: 'Requirements prioritization helps manage conflicts between stakeholders.', answer: 'T' },
+    { type: 'tf', question: 'Prototyping is a technique used to elicit requirements.', answer: 'T' },
+    { type: 'tf', question: 'A prototype is a fully functional version of the system.', answer: 'F' },
+    { type: 'tf', question: 'Scenarios are used to explore how a system might be used in practice.', answer: 'T' },
+    { type: 'tf', question: 'Use cases describe interactions between users and the system.', answer: 'T' },
+    { type: 'tf', question: 'A use case diagram shows the dynamic behavior of the system.', answer: 'F' },
+    { type: 'tf', question: 'Actors in a use case are always human users.', answer: 'F' },
+    { type: 'tf', question: 'Use cases can be extended to show additional functionality.', answer: 'T' },
+    { type: 'tf', question: 'The main success scenario in a use case is the normal flow of events.', answer: 'T' },
+    { type: 'tf', question: 'The requirements document should be flexible to accommodate changes.', answer: 'T' },
+    { type: 'tf', question: 'Requirement elicitation can be performed through surveys.', answer: 'T' },
+    { type: 'tf', question: 'Brainstorming sessions should always result in a consensus.', answer: 'F' },
+    { type: 'tf', question: 'The objective of a focus group is to collect diverse opinions.', answer: 'T' },
+    { type: 'tf', question: 'Workshops are intensive collaborative sessions for requirements elicitation.', answer: 'T' },
+    { type: 'tf', question: 'Observation involves watching users perform their tasks.', answer: 'T' },
+    { type: 'tf', question: 'Ethnographic studies focus on the cultural context of the system use.', answer: 'T' },
+    { type: 'tf', question: 'Requirements workshops are also known as JAD sessions.', answer: 'T' },
+    { type: 'tf', question: 'A JAD session should include only technical staff.', answer: 'F' },
+    { type: 'tf', question: 'User stories are a form of agile requirements.', answer: 'T' },
+    { type: 'tf', question: 'A user story is a brief description of functionality from the user\'s perspective.', answer: 'T' },
+    { type: 'tf', question: 'Acceptance criteria define when a user story is complete.', answer: 'T' },
+    { type: 'tf', question: 'User personas represent real users.', answer: 'T' },
+    { type: 'tf', question: 'Requirements modeling helps visualize and analyze requirements.', answer: 'T' },
+    { type: 'tf', question: 'Data flow diagrams show the flow of data through a system.', answer: 'T' },
+    { type: 'tf', question: 'An entity-relationship diagram is used to model data structures.', answer: 'T' },
+    { type: 'tf', question: 'State diagrams represent the states of a system and transitions between them.', answer: 'T' },
+    { type: 'tf', question: 'Requirements reuse involves using existing requirements for new projects.', answer: 'T' },
+    { type: 'tf', question: 'Requirements reuse can save time and effort.', answer: 'T' },
+    { type: 'tf', question: 'A requirements baseline is a fixed set of requirements at a given point in time.', answer: 'T' },
+    { type: 'tf', question: 'Change control is the process of managing changes to the requirements.', answer: 'T' },
+    { type: 'tf', question: 'The requirements specification should be detailed enough for developers.', answer: 'T' },
+    { type: 'tf', question: 'A gap analysis identifies differences between current and desired states.', answer: 'T' },
+    { type: 'tf', question: 'Requirements management tools help track requirements.', answer: 'T' },
+    { type: 'tf', question: 'An SRS document stands for Software Requirements Specification.', answer: 'T' },
+    { type: 'tf', question: 'Requirements validation is the last step in the requirements engineering process.', answer: 'F' },
+    { type: 'tf', question: 'A use case specification provides detailed information about use cases.', answer: 'T' },
+    { type: 'tf', question: 'Scenario-based requirements are typically documented in textual form.', answer: 'T' },
+    
+    // Multiple Choice Questions
+    { type: 'mc', question: 'Which type of requirement describes system functionality?', options: ['A) Non-functional', 'B) Functional', 'C) User', 'D) Interface'], answer: 'B) Functional' },
+    { type: 'mc', question: 'Non-functional requirements are also known as:', options: ['A) Behavioral requirements', 'B) Quality attributes', 'C) User requirements', 'D) System requirements'], answer: 'B) Quality attributes' },
+    { type: 'mc', question: 'Which requirement type defines system interactions with other systems?', options: ['A) User requirements', 'B) Functional requirements', 'C) Interface requirements', 'D) Non-functional requirements'], answer: 'C) Interface requirements' },
+    { type: 'mc', question: 'Requirements that restrict developers\' options are called:', options: ['A) Constraints', 'B) Enhancements', 'C) Features', 'D) Limitations'], answer: 'A) Constraints' },
+    { type: 'mc', question: 'The ability to trace requirements to related artifacts is known as:', options: ['A) Requirements validation', 'B) Requirements verification', 'C) Requirements traceability', 'D) Requirements prioritization'], answer: 'C) Requirements traceability' },
+    { type: 'mc', question: 'Checking that the system meets the requirements is called:', options: ['A) Requirements validation', 'B) Requirements verification', 'C) Requirements analysis', 'D) Requirements elicitation'], answer: 'B) Requirements verification' },
+    { type: 'mc', question: 'Unplanned changes in requirements are known as:', options: ['A) Requirements verification', 'B) Requirements validation', 'C) Requirements traceability', 'D) Requirements creep'], answer: 'D) Requirements creep' },
+    { type: 'mc', question: 'A feasible way to check a requirement is called:', options: ['A) Testable', 'B) Verifiable', 'C) Validatable', 'D) Traceable'], answer: 'A) Testable' },
+    { type: 'mc', question: 'Identifying stakeholders\' interests is part of:', options: ['A) Requirements validation', 'B) Stakeholder analysis', 'C) Requirements verification', 'D) Requirements traceability'], answer: 'B) Stakeholder analysis' },
+    { type: 'mc', question: 'Managing conflicts between stakeholders involves:', options: ['A) Requirements validation', 'B) Requirements verification', 'C) Requirements prioritization', 'D) Requirements elicitation'], answer: 'C) Requirements prioritization' },
+    { type: 'mc', question: 'A technique used to elicit requirements is:', options: ['A) Prototyping', 'B) Verification', 'C) Validation', 'D) Traceability'], answer: 'A) Prototyping' },
+    { type: 'mc', question: 'A fully functional version of the system is:', options: ['A) Prototype', 'B) Mockup', 'C) Final product', 'D) Scenario'], answer: 'C) Final product' },
+    { type: 'mc', question: 'Exploring system use in practice involves:', options: ['A) Scenarios', 'B) Prototypes', 'C) Diagrams', 'D) Stakeholders'], answer: 'A) Scenarios' },
+    { type: 'mc', question: 'Interactions between users and the system are described by:', options: ['A) Use cases', 'B) Scenarios', 'C) Prototypes', 'D) Stakeholders'], answer: 'A) Use cases' },
+    { type: 'mc', question: 'The dynamic behavior of the system is shown in:', options: ['A) Use case diagram', 'B) State diagram', 'C) Data flow diagram', 'D) Sequence diagram'], answer: 'D) Sequence diagram' },
+    { type: 'mc', question: 'Actors in a use case can be:', options: ['A) Only human users', 'B) Only external systems', 'C) Both human users and external systems', 'D) Only internal systems'], answer: 'C) Both human users and external systems' },
+    { type: 'mc', question: 'Showing additional functionality in use cases involves:', options: ['A) Extending', 'B) Revising', 'C) Validating', 'D) Testing'], answer: 'A) Extending' },
+    { type: 'mc', question: 'The normal flow of events in a use case is called:', options: ['A) Main success scenario', 'B) Alternate flow', 'C) Exception flow', 'D) Use case flow'], answer: 'A) Main success scenario' },
+    { type: 'mc', question: 'Accommodating changes in the requirements document means:', options: ['A) Flexibility', 'B) Rigidity', 'C) Completeness', 'D) Traceability'], answer: 'A) Flexibility' },
+    { type: 'mc', question: 'Collecting data through structured questions is done by:', options: ['A) Surveys', 'B) Interviews', 'C) Workshops', 'D) Observation'], answer: 'A) Surveys' },
+    { type: 'mc', question: 'Brainstorming sessions aim to:', options: ['A) Find consensus', 'B) Generate ideas', 'C) Test ideas', 'D) Validate requirements'], answer: 'B) Generate ideas' },
+    { type: 'mc', question: 'Diverse opinions are collected in:', options: ['A) Focus groups', 'B) Surveys', 'C) Workshops', 'D) Brainstorming sessions'], answer: 'A) Focus groups' },
+    { type: 'mc', question: 'Intensive collaborative sessions for requirements elicitation are called:', options: ['A) Workshops', 'B) Interviews', 'C) Surveys', 'D) Observation'], answer: 'A) Workshops' },
+    { type: 'mc', question: 'Watching users perform their tasks is known as:', options: ['A) Observation', 'B) Interviewing', 'C) Surveying', 'D) Prototyping'], answer: 'A) Observation' },
+    { type: 'mc', question: 'Cultural context of system use is studied in:', options: ['A) Ethnographic studies', 'B) Focus groups', 'C) Workshops', 'D) Surveys'], answer: 'A) Ethnographic studies' },
+    { type: 'mc', question: 'Requirements workshops are also known as:', options: ['A) JAD sessions', 'B) Brainstorming sessions', 'C) Focus groups', 'D) Surveys'], answer: 'A) JAD sessions' },
+    { type: 'mc', question: 'JAD sessions should include:', options: ['A) Only technical staff', 'B) Only end-users', 'C) Both technical staff and end-users', 'D) Only project managers'], answer: 'C) Both technical staff and end-users' },
+    { type: 'mc', question: 'A form of agile requirements is:', options: ['A) User stories', 'B) Use cases', 'C) Functional requirements', 'D) Non-functional requirements'], answer: 'A) User stories' },
+    { type: 'mc', question: 'Functionality from the user\'s perspective is described in:', options: ['A) User stories', 'B) Use cases', 'C) Scenarios', 'D) Prototypes'], answer: 'A) User stories' },
+    { type: 'mc', question: 'Defining when a user story is complete involves:', options: ['A) Acceptance criteria', 'B) Use cases', 'C) Scenarios', 'D) Prototypes'], answer: 'A) Acceptance criteria' },
+    { type: 'mc', question: 'Representations of real users are called:', options: ['A) User personas', 'B) Stakeholders', 'C) Actors', 'D) Prototypes'], answer: 'A) User personas' },
+    { type: 'mc', question: 'Visualizing and analyzing requirements involves:', options: ['A) Requirements modeling', 'B) Requirements validation', 'C) Requirements verification', 'D) Requirements prioritization'], answer: 'A) Requirements modeling' },
+    { type: 'mc', question: 'Flow of data through a system is shown in:', options: ['A) Data flow diagrams', 'B) State diagrams', 'C) Use case diagrams', 'D) Sequence diagrams'], answer: 'A) Data flow diagrams' },
+    { type: 'mc', question: 'Modeling data structures uses:', options: ['A) Entity-relationship diagrams', 'B) State diagrams', 'C) Sequence diagrams', 'D) Data flow diagrams'], answer: 'A) Entity-relationship diagrams' },
+    { type: 'mc', question: 'States of a system and transitions between them are represented in:', options: ['A) State diagrams', 'B) Sequence diagrams', 'C) Data flow diagrams', 'D) Use case diagrams'], answer: 'A) State diagrams' },
+    { type: 'mc', question: 'Using existing requirements for new projects is called:', options: ['A) Requirements reuse', 'B) Requirements verification', 'C) Requirements validation', 'D) Requirements prioritization'], answer: 'A) Requirements reuse' },
+    { type: 'mc', question: 'Saving time and effort can be achieved through:', options: ['A) Requirements reuse', 'B) Requirements validation', 'C) Requirements verification', 'D) Requirements prioritization'], answer: 'A) Requirements reuse' },
+    { type: 'mc', question: 'A fixed set of requirements at a given point in time is known as:', options: ['A) Requirements baseline', 'B) Requirements traceability', 'C) Requirements validation', 'D) Requirements verification'], answer: 'A) Requirements baseline' },
+    { type: 'mc', question: 'Managing changes to the requirements involves:', options: ['A) Change control', 'B) Requirements verification', 'C) Requirements validation', 'D) Requirements prioritization'], answer: 'A) Change control' },
+    { type: 'mc', question: 'A detailed requirements specification is essential for:', options: ['A) Developers', 'B) Stakeholders', 'C) Managers', 'D) Testers'], answer: 'A) Developers' },
+    { type: 'mc', question: 'Identifying differences between current and desired states is called:', options: ['A) Gap analysis', 'B) Requirements validation', 'C) Requirements verification', 'D) Requirements prioritization'], answer: 'A) Gap analysis' },
+    { type: 'mc', question: 'Tracking requirements is facilitated by:', options: ['A) Requirements management tools', 'B) Requirements validation', 'C) Requirements verification', 'D) Requirements prioritization'], answer: 'A) Requirements management tools' },
+    { type: 'mc', question: 'An SRS document stands for:', options: ['A) Software Requirements Specification', 'B) System Requirements Specification', 'C) Stakeholder Requirements Specification', 'D) Specification of Requirements'], answer: 'A) Software Requirements Specification' },
+    { type: 'mc', question: 'The last step in the requirements engineering process is:', options: ['A) Requirements validation', 'B) Requirements verification', 'C) Requirements specification', 'D) Requirements management'], answer: 'D) Requirements management' },
+    { type: 'mc', question: 'Detailed information about use cases is provided in:', options: ['A) Use case specification', 'B) Scenarios', 'C) User stories', 'D) Prototypes'], answer: 'A) Use case specification' },
+    { type: 'mc', question: 'Scenario-based requirements are typically documented in:', options: ['A) Textual form', 'B) Diagrams', 'C) Code', 'D) Models'], answer: 'A) Textual form' },
+];
+
+ 
+
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            shuffleQuestions();
+            displayQuestion();
+        });
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            const questionObj = questions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question', 'active');
+            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+
+            if (questionObj.type === 'tf') {
+                questionElement.innerHTML += `
+                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
+                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
+                `;
+            } else if (questionObj.type === 'mc') {
+                questionObj.options.forEach(option => {
+                    questionElement.innerHTML += `
+                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
+                    `;
+                });
+            }
+
+            container.appendChild(questionElement);
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                saveAnswer();
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                saveAnswer();
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function saveAnswer() {
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (selectedAnswer) {
+                userAnswers[currentQuestionIndex] = selectedAnswer.value;
+            }
+        }
+
+        function submitExam() {
+            saveAnswer();
+            let correctCount = 0;
+            const incorrectAnswers = [];
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    correctCount++;
+                } else {
+                    incorrectAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
+                }
+            });
+            displayResults(correctCount, incorrectAnswers);
+        }
+
+        function displayResults(correctCount, incorrectAnswers) {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = `<p>You got ${correctCount} out of ${questions.length} questions correct.</p>`;
+            
+            if (incorrectAnswers.length > 0) {
+                resultContainer.innerHTML += '<h3>Incorrect Answers:</h3>';
+                incorrectAnswers.forEach(item => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.classList.add('result');
+                    resultDiv.innerHTML = `<p>Question: ${item.question}</p>
+                                           <p>Your Answer: ${item.userAnswer || 'No answer'}</p>
+                                           <p>Correct Answer: ${item.correctAnswer}</p>`;
+                    resultContainer.appendChild(resultDiv);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
