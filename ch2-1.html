@@ -1,231 +1,366 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam for ch2</title>
-    <style>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Exam 1</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+            <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f0f8ff;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        .question {
-            display: none;
-        }
-        .question.active {
-            display: block;
-        }
-        label {
-            margin-top: 3px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #resultContainer {
-            margin-top: 20px;
-        }
-        .result {
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #555;
-        }
-        .home-container {
-            text-align: center;
-        }
-        .slider-label {
-            display: block;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div id="homeContainer" class="home-container">
-            <h1>Chapter2 Exam</h1>
-            <label class="slider-label">Select number of True/False questions:</label>
-            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
-            <span id="tfCountValue">1</span>
-            <br>
-            <label class="slider-label">Select number of Multiple Choice questions:</label>
-            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
-            <span id="mcCountValue">1</span>
-            <br>
-            <button onclick="startExam()">Start the Exam</button>
-        </div>
-        <div id="questionsContainer"></div>
-        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
-        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
-        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
-        <div id="resultContainer"></div>
-    </div>
-    <footer>Developed by Badr El sheshtawy</footer>
-
-    <script>
-       const questions = [
-       // True/False Questions
-
-
-    ];
-
-
-
-        let currentQuestionIndex = 0;
-        let userAnswers = [];
-        let selectedTFCount = 0;
-        let selectedMCCount = 0;
-        let selectedQuestions = [];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateRangeValues();
-            shuffleQuestions();
-        });
-
-        function updateRangeValues() {
-            const tfRange = document.getElementById('tfCount');
-            const mcRange = document.getElementById('mcCount');
-            tfRange.max = questions.filter(q => q.type === 'tf').length;
-            mcRange.max = questions.filter(q => q.type === 'mc').length;
-        }
-
-        function updateValue(id, value) {
-            document.getElementById(id).innerText = value;
-        }
-
-        function shuffleQuestions() {
-            for (let i = questions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [questions[i], questions[j]] = [questions[j], questions[i]];
-            }
-        }
-
-        function startExam() {
-            selectedTFCount = parseInt(document.getElementById('tfCount').value);
-            selectedMCCount = parseInt(document.getElementById('mcCount').value);
-            selectedQuestions = getSelectedQuestions();
-            userAnswers = new Array(selectedQuestions.length).fill(null);
-            document.getElementById('homeContainer').style.display = 'none';
-            document.getElementById('prevBtn').style.display = 'inline-block';
-            document.getElementById('nextBtn').style.display = 'inline-block';
-            document.getElementById('submitBtn').style.display = 'inline-block';
-            displayQuestion();
-        }
-
-        function getSelectedQuestions() {
-            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
-            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
-            return [...tfQuestions, ...mcQuestions];
-        }
-
-        function displayQuestion() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-            const questionObj = selectedQuestions[currentQuestionIndex];
-            const questionElement = document.createElement('div');
-            questionElement.classList.add('question', 'active');
-            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
-
-            if (questionObj.type === 'tf') {
-                questionElement.innerHTML += `
-                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
-                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
-                `;
-            } else if (questionObj.type === 'mc') {
-                questionObj.options.forEach(option => {
-                    questionElement.innerHTML += `
-                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
-                    `;
-                });
-            }
-            container.appendChild(questionElement);
-
-            if (userAnswers[currentQuestionIndex] !== null) {
-                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
-                if (selectedOption) selectedOption.checked = true;
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestionIndex > 0) {
-                saveAnswer();
-                currentQuestionIndex--;
-                displayQuestion();
-            }
-        }
-
-        function nextQuestion() {
-            if (currentQuestionIndex < selectedQuestions.length - 1) {
-                saveAnswer();
-                currentQuestionIndex++;
-                displayQuestion();
-            }
-        }
-
-        function saveAnswer() {
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                userAnswers[currentQuestionIndex] = selectedOption.value;
-            }
-        }
-
-        function submitExam() {
-            saveAnswer();
-            let score = 0;
-            let correctAnswers = [];
-            selectedQuestions.forEach((question, index) => {
-                if (userAnswers[index] === question.answer) {
-                    score++;
-                } else {
-                    correctAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                    background-color: #f0f8ff;
                 }
-            });
+                .container {
+                    max-width: 600px;
+                    margin: auto;
+                    background: #fff;
+                    padding: 20px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    border-radius: 10px;
+                    position: relative;
+                }
+                .question {
+                    display: none;
+                }
+                .question.active {
+                    display: block;
+                    font-size: 18px; 
+                }
+                label {
+    display: inline-block;
+    margin-top: 4px;
+}
+                .button {
+                    margin: 5px;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    border: none;
+                    border-radius: 5px;
+                    background-color: #007bff;
+                    color: white;
+                    transition: background-color 0.3s;
+                    text-decoration: none;
+                }
+                .button:hover {
+                    background-color: #0056b3;
+                }
+                .icon-button {
+                    font-size: 20px;
+                    cursor: pointer;
+                    color: #007bff;
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    margin: 0 10px;
+                }
+                .icon-button:hover {
+                    color: #0056b3;
+                }
+                #randomizeIcon {
+                    color: #00ff00; 
+                }
+                #randomizeIcon.inactive {
+                    color: #ff0000; 
+                }
+                #resultContainer {
+                    margin-top: 20px;
+                }
+                .result {
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    margin-top: 10px;
+                    background-color: #e7f0ff;
+                }
+                footer {
+                    text-align: center;
+                    margin-top: 20px;
+                    color: #555;
+                }
+                .home-container {
+                    text-align: center;
+                }
+                .slider-label {
+                    display: block;
+                    margin-top: 20px;
+                }
+                .footer {
+                    margin-top: 20px;
+                    font-size: 14px;
+                    color: #555;
+                    text-align: center;
+                }
+                .footer a {
+                    text-decoration: none;
+                    font-size: 16px;
+                    color: #666;
+                }
+                .error-box {
+                    border: 1px solid #ff0000;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    background-color: #fff5f5;
+                }
+                #questionHeader {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <i class="fas fa-random icon-button" id="randomizeIcon" onclick="toggleRandomize()" title="Randomize Questions"></i>
+                <i class="fas fa-redo-alt icon-button" id="restartExamBtn" onclick="restartExam()" title="Restart Exam" style="display: none;"></i>
+                <div id="homeContainer" class="home-container">
+                    <h1>Exam 1</h1>
+                    <label class="slider-label">Select number of True/False questions:</label>
+                    <input type="range" id="tfCount" min="0" value="20" oninput="updateValue('tfCountValue', this.value)">
+                    <span id="tfCountValue">20</span>
+                    <br>
+                    <label class="slider-label">Select number of Multiple Choice questions:</label>
+                    <input type="range" id="mcCount" min="0" value="20" oninput="updateValue('mcCountValue', this.value)">
+                    <span id="mcCountValue">20</span>
+                    <br>            
+                    <button class="button" onclick="startExam()">Start the Exam</button>
+                </div>
+                <div id="questionHeader" style="margin-bottom: 10px; font-size: 18px;"></div> <!-- Add this line here -->
+                <div id="questionsContainer"></div>
+                <button class="button" id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+                <button class="button" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+                <button class="button" id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+                <div id="resultContainer"></div>
+            </div>
+            <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
+        <script>
+                const originalQuestions = [
+// True/False Questions
+{ type: 'tf', question: 'Static binding occurs before runtime and remains unchanged throughout program execution.', answer: 'T' },
+{ type: 'tf', question: 'Dynamic type binding is more efficient than static type binding.', answer: 'F' },
+{ type: 'tf', question: 'An explicit declaration is a program statement used to declare the types of variables.', answer: 'T' },
+{ type: 'tf', question: 'Lexical analysis is the process of converting a sequence of characters into a sequence of tokens.', answer: 'T' },
+{ type: 'tf', question: 'Syntax analysis is also known as parsing.', answer: 'T' },
+{ type: 'tf', question: 'Semantics is concerned with the meaning of the program.', answer: 'T' },
+{ type: 'tf', question: 'A context-free grammar can describe all programming languages.', answer: 'F' },
+{ type: 'tf', question: 'BNF stands for Backus-Naur Form.', answer: 'T' },
+{ type: 'tf', question: 'In BNF, non-terminal symbols are enclosed in angle brackets.', answer: 'T' },
+{ type: 'tf', question: 'Type checking is performed during the lexical analysis phase.', answer: 'F' },
+{ type: 'tf', question: 'The syntax of a programming language is its form, and the semantics is its meaning.', answer: 'T' },
+{ type: 'tf', question: 'An ambiguous grammar can have more than one parse tree for some sentence.', answer: 'T' },
+{ type: 'tf', question: 'A compiler translates code from a high-level programming language to machine code.', answer: 'T' },
+{ type: 'tf', question: 'A syntax error is an error in the sequence of characters or tokens.', answer: 'T' },
+{ type: 'tf', question: 'Operational semantics describe the meaning of a program by executing its statements.', answer: 'T' },
+{ type: 'tf', question: 'Denotational semantics is a method for defining the meaning of programs in a mathematical way.', answer: 'T' },
+{ type: 'tf', question: 'Static semantics enforce constraints on the structure of syntactically correct programs.', answer: 'T' },
+{ type: 'tf', question: 'A finite automaton can be used to recognize patterns in lexical analysis.', answer: 'T' },
+{ type: 'tf', question: 'Type inference is the process of automatically determining the types of expressions.', answer: 'T' },
+{ type: 'tf', question: 'A regular expression can describe all syntax rules of programming languages.', answer: 'F' },
 
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
-
-            if (score === selectedQuestions.length) {
-                resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
-            } else {
-                correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
-                    resultContainer.innerHTML += `
-                        <div class="result">
-                            <p>Question: ${question}</p>
-                            <p>Correct Answer: ${correctAnswer}</p>
-                            <p>Your Answer: ${userAnswer}</p>
-                        </div>
-                    `;
+// Multiple Choice Questions
+{ type: 'mc', question: 'Which of the following is not a type of semantic?', options: ['a) Static semantics', 'b) Dynamic semantics', 'c) Denotational semantics', 'd) Lexical semantics'], answer: 'd) Lexical semantics' },
+{ type: 'mc', question: 'Which form is used to describe the syntax of a programming language formally?', options: ['a) BNF', 'b) UML', 'c) XML', 'd) JSON'], answer: 'a) BNF' },
+{ type: 'mc', question: 'What is the primary role of a lexical analyzer?', options: ['a) To check the syntax of the code', 'b) To convert the source code to tokens', 'c) To execute the program', 'd) To optimize the code'], answer: 'b) To convert the source code to tokens' },
+{ type: 'mc', question: 'Which phase of compilation involves checking the types of expressions?', options: ['a) Lexical analysis', 'b) Syntax analysis', 'c) Semantic analysis', 'd) Code generation'], answer: 'c) Semantic analysis' },
+{ type: 'mc', question: 'What does an ambiguous grammar lead to?', options: ['a) Multiple parse trees', 'b) Single parse tree', 'c) No parse tree', 'd) Infinite parse trees'], answer: 'a) Multiple parse trees' },
+{ type: 'mc', question: 'In which form are non-terminal symbols usually enclosed?', options: ['a) Parentheses', 'b) Square brackets', 'c) Angle brackets', 'd) Curly braces'], answer: 'c) Angle brackets' },
+{ type: 'mc', question: 'Which semantic approach describes the meaning of a program by the changes in the state of the execution environment?', options: ['a) Static semantics', 'b) Dynamic semantics', 'c) Operational semantics', 'd) Denotational semantics'], answer: 'c) Operational semantics' },
+{ type: 'mc', question: 'What is the purpose of a type system in a programming language?', options: ['a) To define the syntax', 'b) To check for type errors', 'c) To improve execution speed', 'd) To simplify the code'], answer: 'b) To check for type errors' },
+{ type: 'mc', question: 'Which component of the compiler translates the high-level language code into machine code?', options: ['a) Lexical analyzer', 'b) Syntax analyzer', 'c) Semantic analyzer', 'd) Code generator'], answer: 'd) Code generator' },
+{ type: 'mc', question: 'What is BNF primarily used for?', options: ['a) Describing the syntax of programming languages', 'b) Describing the semantics of programming languages', 'c) Describing the runtime behavior of programs', 'd) Describing the type system'], answer: 'a) Describing the syntax of programming languages' },
+{ type: 'mc', question: 'Which term refers to the grammar rules that define how tokens can be combined?', options: ['a) Syntax', 'b) Semantics', 'c) Lexemes', 'd) Pragmatics'], answer: 'a) Syntax' },
+{ type: 'mc', question: 'Which phase of a compiler is responsible for the optimization of code?', options: ['a) Lexical analysis', 'b) Syntax analysis', 'c) Semantic analysis', 'd) Code optimization'], answer: 'd) Code optimization' },
+{ type: 'mc', question: 'Which type of semantics is concerned with the meaning of expressions and statements?', options: ['a) Static semantics', 'b) Dynamic semantics', 'c) Operational semantics', 'd) Denotational semantics'], answer: 'b) Dynamic semantics' },
+{ type: 'mc', question: 'Which of the following is an example of a non-terminal in BNF?', options: ['a) <expression>', 'b) +', 'c) if', 'd) while'], answer: 'a) <expression>' },
+{ type: 'mc', question: 'What is a token in the context of lexical analysis?', options: ['a) A keyword', 'b) A syntax rule', 'c) A sequence of characters representing a basic unit', 'd) A semantic rule'], answer: 'c) A sequence of characters representing a basic unit' },
+{ type: 'mc', question: 'Which of the following is not part of lexical analysis?', options: ['a) Tokenizing the input', 'b) Removing comments and whitespace', 'c) Checking type errors', 'd) Identifying lexemes'], answer: 'c) Checking type errors' },
+{ type: 'mc', question: 'Which phase of a compiler involves checking for variable declarations before they are used?', options: ['a) Lexical analysis', 'b) Syntax analysis', 'c) Semantic analysis', 'd) Code generation'], answer: 'c) Semantic analysis' },
+{ type: 'mc', question: 'What is a parse tree?', options: ['a) A hierarchical structure representing the syntactic structure of the input', 'b) A sequence of tokens', 'c) A mapping of variable names to values', 'd) An optimized version of the code'], answer: 'a) A hierarchical structure representing the syntactic structure of the input' },
+{ type: 'mc', question: 'Which of the following is a type of intermediate code generation?', options: ['a) Abstract syntax tree', 'b) Assembly code', 'c) Machine code', 'd) Bytecode'], answer: 'd) Bytecode' },
+{ type: 'mc', question: 'What does a type checker do?', options: ['a) Converts source code to tokens', 'b) Parses the input', 'c) Verifies the types of expressions', 'd) Optimizes the code'], answer: 'c) Verifies the types of expressions' }
+];
+        
+                let questions = [...originalQuestions];
+                let currentQuestionIndex = 0;
+                let userAnswers = [];
+                let randomizeQuestions = true;
+        
+                function toggleRandomize() {
+                    randomizeQuestions = !randomizeQuestions;
+                    document.getElementById('randomizeIcon').classList.toggle('inactive', !randomizeQuestions);
+                }
+        
+                function updateValue(spanId, value) {
+                    document.getElementById(spanId).textContent = value;
+                }
+        
+                function startExam() {
+                    const selectedTFCount = parseInt(document.getElementById('tfCount').value);
+                    const selectedMCCount = parseInt(document.getElementById('mcCount').value);
+        
+                    let filteredQuestions = [
+                        ...originalQuestions.filter(q => q.type === 'tf').slice(0, selectedTFCount),
+                        ...originalQuestions.filter(q => q.type === 'mc').slice(0, selectedMCCount)
+                    ];
+        
+                    if (randomizeQuestions) {
+                        shuffleArray(filteredQuestions);
+                    }
+        
+                    questions = filteredQuestions;
+                    currentQuestionIndex = 0;
+                    userAnswers = [];
+        
+                    document.getElementById('homeContainer').style.display = 'none';
+                    document.getElementById('prevBtn').style.display = 'none';
+                    document.getElementById('nextBtn').style.display = 'inline-block';
+                    document.getElementById('submitBtn').style.display = 'inline-block';
+                    document.getElementById('restartExamBtn').style.display = 'inline-block';
+                    document.getElementById('randomizeIcon').style.display = 'none'; // Hide randomize icon
+                    displayQuestion(currentQuestionIndex);
+                }
+        
+                function displayQuestion(index) {
+            const questionContainer = document.getElementById('questionsContainer');
+            const questionHeader = document.getElementById('questionHeader');
+            questionContainer.innerHTML = '';
+        
+            const question = questions[index];
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question active';
+        
+            // Add question number and total number of questions
+            questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
+        
+            questionDiv.innerHTML = `<p>${question.question}</p>`;
+        
+            if (question.type === 'tf') {
+                questionDiv.innerHTML += `
+                    <label style="" ><input type="radio" name="answer" value="T"> True</label><br>
+                    <label style="" ><input type="radio" name="answer" value="F"> False</label>
+                `;
+            } else if (question.type === 'mc') {
+                question.options.forEach(option => {
+                    questionDiv.innerHTML += `<label style="" ><input type="radio" name="answer" value="${option}"> ${option}</label><br>`;
                 });
             }
-
+        
+            questionContainer.appendChild(questionDiv);
+        
+            if (userAnswers[index] !== undefined) {
+                document.querySelector(`input[name="answer"][value="${userAnswers[index]}"]`).checked = true;
+            }
+        
+            document.getElementById('prevBtn').style.display = index > 0 ? 'inline-block' : 'none';
+            document.getElementById('nextBtn').style.display = index < questions.length - 1 ? 'inline-block' : 'none';
+        }
+        
+        
+                function nextQuestion() {
+                    saveAnswer();
+                    if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        displayQuestion(currentQuestionIndex);
+                    }
+                }
+        
+                function prevQuestion() {
+                    saveAnswer();
+                    if (currentQuestionIndex > 0) {
+                        currentQuestionIndex--;
+                        displayQuestion(currentQuestionIndex);
+                    }
+                }
+        
+                function saveAnswer() {
+                    const selectedOption = document.querySelector('input[name="answer"]:checked');
+                    if (selectedOption) {
+                        userAnswers[currentQuestionIndex] = selectedOption.value;
+                    }
+                }
+        
+                function submitExam() {
+                    saveAnswer();
+        
+                    const resultContainer = document.getElementById('resultContainer');
+                    resultContainer.innerHTML = '';
+        
+                    let correctCount = 0;
+                    const scoreDiv = document.createElement('div');
+                    scoreDiv.className = 'result';
+                    scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
+                    resultContainer.appendChild(scoreDiv);
+                    questions.forEach((question, index) => {
+                        const isCorrect = userAnswers[index] === question.answer;
+                        if (isCorrect) correctCount++;
+        
+                        const resultDiv = document.createElement('div');
+                        resultDiv.className = 'result';
+                        resultDiv.innerHTML = `
+                            <p>${question.question}</p>
+                            <p>Your answer: ${userAnswers[index]}</p>
+                            <p>Correct answer: ${question.answer}</p>
+                        `;
+                        resultContainer.appendChild(resultDiv);
+                    });
+        
+                    document.getElementById('randomizeIcon').style.display = 'none';
+                    document.getElementById('restartExamBtn').style.display = 'inline-block';
+                    document.getElementById('questionsContainer').innerHTML = '';
+                    document.getElementById('prevBtn').style.display = 'none';
+                    document.getElementById('nextBtn').style.display = 'none';
+                    document.getElementById('submitBtn').style.display = 'none';
+                }
+        
+                function restartExam() {
+                    currentQuestionIndex = 0;
+                    userAnswers = [];
+                    document.getElementById('resultContainer').innerHTML = '';
+                    document.getElementById('homeContainer').style.display = 'block';
+                    document.getElementById('randomizeIcon').style.display = 'inline-block';
+                    document.getElementById('prevBtn').style.display = 'none';
+                    document.getElementById('nextBtn').style.display = 'none';
+                    document.getElementById('submitBtn').style.display = 'none';
+                    document.getElementById('restartExamBtn').style.display = 'none';
+                }
+        
+                function shuffleArray(array) {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                }
+        
+                // Add this function to update the maximum value of the range inputs
+        function updateRangeMaxValues() {
+            document.getElementById('tfCount').max = originalQuestions.filter(q => q.type === 'tf').length;
+            document.getElementById('mcCount').max = originalQuestions.filter(q => q.type === 'mc').length;
+        }
+        
+        // Update the range max values on page load and when restarting the exam
+        window.onload = updateRangeMaxValues;
+        function restartExam() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            document.getElementById('resultContainer').innerHTML = '';
+            document.getElementById('homeContainer').style.display = 'block';
+            document.getElementById('randomizeIcon').style.display = 'inline-block';
             document.getElementById('prevBtn').style.display = 'none';
             document.getElementById('nextBtn').style.display = 'none';
             document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('homeContainer').style.display = 'block';
+            document.getElementById('restartExamBtn').style.display = 'none';
+        
+            // Update range inputs based on the number of questions available
+            updateRangeMaxValues();
+            
+            // Show number of remaining questions
         }
-    </script>
-</body>
-</html>
-
-
+        
+            </script>
+        </body>
+        </html>
+        
+        
+        
+        
+        

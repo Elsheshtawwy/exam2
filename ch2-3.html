@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam for ch2</title>
+    <title>Ch3 Exam 1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
+body {
             font-family: Arial, sans-serif;
             padding: 20px;
             background-color: #f0f8ff;
@@ -17,27 +18,51 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            position: relative;
         }
         .question {
             display: none;
         }
         .question.active {
             display: block;
+            font-size: 18px; 
         }
         label {
-            margin-top: 3px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 20px;
+    display: inline-block;
+    margin-top: 4px;
+}
+        .button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+            text-decoration: none;
         }
-        button:hover {
-            background-color: #45a049;
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .icon-button {
+            font-size: 20px;
+            cursor: pointer;
+            color: #007bff;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            margin: 0 10px;
+        }
+        .icon-button:hover {
+            color: #0056b3;
+        }
+        #randomizeIcon {
+            color: #00ff00; 
+        }
+        #randomizeIcon.inactive {
+            color: #ff0000; 
         }
         #resultContainer {
             margin-top: 20px;
@@ -46,6 +71,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             margin-top: 10px;
+            background-color: #e7f0ff;
         }
         footer {
             text-align: center;
@@ -59,301 +85,187 @@
             display: block;
             margin-top: 20px;
         }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+        .footer a {
+            text-decoration: none;
+            font-size: 16px;
+            color: #666;
+        }
+        .error-box {
+            border: 1px solid #ff0000;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff5f5;
+        }
+        #questionHeader {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
     </style>
 </head>
 <body>
     <div class="container">
+        <i class="fas fa-random icon-button" id="randomizeIcon" onclick="toggleRandomize()" title="Randomize Questions"></i>
+        <i class="fas fa-redo-alt icon-button" id="restartExamBtn" onclick="restartExam()" title="Restart Exam" style="display: none;"></i>
         <div id="homeContainer" class="home-container">
-            <h1>Chapter2 Exam</h1>
+            <h1>Ch3 Exam 1</h1>
             <label class="slider-label">Select number of True/False questions:</label>
-            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
-            <span id="tfCountValue">1</span>
+            <input type="range" id="tfCount" min="0" value="20" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">20</span>
             <br>
             <label class="slider-label">Select number of Multiple Choice questions:</label>
-            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
-            <span id="mcCountValue">1</span>
-            <br>
-            <button onclick="startExam()">Start the Exam</button>
+            <input type="range" id="mcCount" min="0" value="20" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">20</span>
+            <br>            
+            <button class="button" onclick="startExam()">Start the Exam</button>
         </div>
+        <div id="questionHeader" style="margin-bottom: 10px; font-size: 18px;"></div> <!-- Add this line here -->
         <div id="questionsContainer"></div>
-        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
-        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
-        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        <button class="button" id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button class="button" id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button class="button" id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
         <div id="resultContainer"></div>
     </div>
-    <footer>Developed by Badr El sheshtawy</footer>
+    <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
+<script>
+        const originalQuestions = [
+        { type: 'tf', question: 'The syntax of a programming language defines the structure of the statements.', answer: 'T' },
+{ type: 'tf', question: 'The semantics of a programming language defines the meaning of the statements.', answer: 'T' },
+{ type: 'tf', question: 'In C++, "while(condition)" is an example of syntax.', answer: 'T' },
+{ type: 'tf', question: 'In programming, the term "sentence" refers to a sequence of characters.', answer: 'F' },
+{ type: 'tf', question: 'A "language" is a set of sentences.', answer: 'T' },
+{ type: 'tf', question: 'Lexemes are the smallest units in the syntax description.', answer: 'T' },
+{ type: 'tf', question: 'Tokens are a classification for lexemes.', answer: 'T' },
+{ type: 'tf', question: 'An identifier is a type of token.', answer: 'T' },
+{ type: 'tf', question: 'Literals are not considered lexemes.', answer: 'F' },
+{ type: 'tf', question: 'In the statement "index = 2*count + 17;", "count" is an identifier.', answer: 'T' },
+{ type: 'tf', question: 'In the statement "index = 2*count + 17;", "=" is a multiplication operator.', answer: 'F' },
+{ type: 'tf', question: 'A programming language\'s syntax is invariant across different programming languages.', answer: 'F' },
+{ type: 'tf', question: 'The term "lexeme" refers to a physical memory address.', answer: 'F' },
+{ type: 'tf', question: 'Operators are considered special words in programming syntax.', answer: 'T' },
+{ type: 'tf', question: 'Semantics can vary between different programming languages.', answer: 'T' },
+{ type: 'tf', question: 'The assignment operator is considered a token in programming languages.', answer: 'T' },
+{ type: 'tf', question: 'The semantics of a while loop in C++ is the same as in all other programming languages.', answer: 'F' },
+{ type: 'tf', question: 'Syntax errors occur when the structure of a program statement is incorrect.', answer: 'T' },
+{ type: 'tf', question: 'Semantics errors are related to the meaning of the program statements.', answer: 'T' },
+{ type: 'tf', question: 'Keywords in a programming language cannot be used as identifiers.', answer: 'T' },
+{ type: 'mc', question: 'What does the term "Syntax" refer to?', options: ['a) The meaning of sentences', 'b) The structure of sentences', 'c) The memory allocation of variables', 'd) The run-time behavior of programs'], answer: 'b) The structure of sentences' },
+  { type: 'mc', question: 'What is the meaning of "Semantic"?', options: ['a) How to write code', 'b) The structure of sentences', 'c) The meaning of sentences', 'd) The syntax rules'], answer: 'c) The meaning of sentences' },
+  { type: 'mc', question: 'In which language is the syntax of a while loop fixed?', options: ['a) Python', 'b) Java', 'c) C++', 'd) JavaScript'], answer: 'c) C++' },
+  { type: 'mc', question: 'What is a "Sentence" in programming terms?', options: ['a) A single letter', 'b) A collection of tokens', 'c) A series of characters', 'd) An operator'], answer: 'c) A series of characters' },
+  { type: 'mc', question: 'Which of the following describes a "Language"?', options: ['a) A single token', 'b) A group of sentences', 'c) A programming paradigm', 'd) A memory cell'], answer: 'b) A group of sentences' },
+  { type: 'mc', question: 'What is a "Lexeme"?', options: ['a) A rule for syntax', 'b) A description of sentence structure', 'c) A sequence of characters', 'd) A semantic rule'], answer: 'c) A sequence of characters' },
+  { type: 'mc', question: 'What are "Tokens"?', options: ['a) Names of variables', 'b) Types of syntax', 'c) Classifications of lexemes', 'd) Operators'], answer: 'c) Classifications of lexemes' },
+  { type: 'mc', question: 'Which of the following is NOT a type of lexeme?', options: ['a) Identifiers', 'b) Literals', 'c) Operators', 'd) Scopes'], answer: 'd) Scopes' },
+  { type: 'mc', question: 'In the expression "index = 2*count + 17;", what is "index"?', options: ['a) A token', 'b) An identifier', 'c) An operator', 'd) A literal'], answer: 'b) An identifier' },
+  { type: 'mc', question: 'In the same expression, what is "2"?', options: ['a) An identifier', 'b) A literal', 'c) An operator', 'd) A keyword'], answer: 'b) A literal' },
+  { type: 'mc', question: 'What is the "equal_sign" token in "index = 2*count + 17;"?', options: ['a) =', 'b) +', 'c) *', 'd) 17'], answer: 'a) =' },
+  { type: 'mc', question: 'What is "count" in the expression "index = 2*count + 17;"?', options: ['a) A literal', 'b) An identifier', 'c) An operator', 'd) A keyword'], answer: 'b) An identifier' },
+  { type: 'mc', question: 'What is the "plus_operator" token in "index = 2*count + 17;"?', options: ['a) +', 'b) =', 'c) 17', 'd) index'], answer: 'a) +' },
+  { type: 'mc', question: 'What does "Syntax" refer to in programming?', options: ['a) The arrangement of words and phrases to create well-formed sentences', 'b) The meaning of the statements', 'c) The storage allocation of variables', 'd) The run-time behavior'], answer: 'a) The arrangement of words and phrases to create well-formed sentences' },
+  { type: 'mc', question: 'What does "Semantic" describe?', options: ['a) The structure of code', 'b) The meaning of code', 'c) The data type of variables', 'd) The input/output operations'], answer: 'b) The meaning of code' },
+  { type: 'mc', question: 'In C++, what does "While(condition)" represent?', options: ['a) Syntax', 'b) Semantic', 'c) Operator', 'd) Data type'], answer: 'a) Syntax' },
+  { type: 'mc', question: 'Which of the following is a "special word" in programming?', options: ['a) index', 'b) =', 'c) 2', 'd) while'], answer: 'd) while' },
+  { type: 'mc', question: 'Which token class does "count" belong to?', options: ['a) Operator', 'b) Identifier', 'c) Literal', 'd) Keyword'], answer: 'b) Identifier' },
+  { type: 'mc', question: 'What is the token for the semicolon in "index = 2*count + 17;"?', options: ['a) semicolon', 'b) equal_sign', 'c) identifier', 'd) literal'], answer: 'a) semicolon' },
+  
+        ];
 
-    <script>
-       const questions = [
-    // True/False Questions
-    { type: 'tf', question: 'Requirements validation ensures that requirement statements will satisfy user needs.', answer: 'T' },
-    { type: 'tf', question: 'A system requirements specification describes the overall product.', answer: 'T' },
-    { type: 'tf', question: 'Problem reports can help identify areas for system improvement.', answer: 'T' },
-    { type: 'tf', question: 'Use cases are part of scenario analysis of user tasks.', answer: 'T' },
-    { type: 'tf', question: 'Business requirements include a statement of the organization\'s business objectives.', answer: 'T' },
-    { type: 'tf', question: 'The analyst should review designs, code, and test cases to ensure requirements were interpreted correctly.', answer: 'T' },
-    { type: 'tf', question: 'Questionnaires are used to gather requirements data.', answer: 'T' },
-    { type: 'tf', question: 'User representatives must review the requirements to determine correctness.', answer: 'T' },
-    { type: 'tf', question: 'Ambiguity in requirements results in imprecise and insufficiently detailed requirements.', answer: 'T' },
-    { type: 'tf', question: 'Traceability of requirements helps ensure each requirement originates from an authorized source.', answer: 'T' },
-    { type: 'tf', question: 'Requirements must be written in language appropriate to the user domain.', answer: 'T' },
-    { type: 'tf', question: 'Interviews with users can provide insights into required system capabilities.', answer: 'T' },
-    { type: 'tf', question: 'Requirements analysts can be dedicated specialists or team members with other job functions.', answer: 'T' },
-    { type: 'tf', question: 'The analyst should help create, review, and execute the project\'s requirements management plan.', answer: 'T' },
-    { type: 'tf', question: 'Reverse engineering of existing systems can reveal requirements.', answer: 'T' },
-    { type: 'tf', question: 'Requirements should not include implementation details.', answer: 'T' },
-    { type: 'tf', question: 'Ambiguous requirements lead to wasted time and incorrect solutions.', answer: 'T' },
-    { type: 'tf', question: 'Eliciting requirements involves proactive engagement with users.', answer: 'T' },
-    { type: 'tf', question: 'Business process analysis is a technique for gathering requirements.', answer: 'T' },
-    { type: 'tf', question: 'A requirement must be necessary and reflect real customer needs.', answer: 'T' },
-    { type: 'tf', question: 'Scenario analysis helps in identifying user tasks.', answer: 'T' },
-    { type: 'tf', question: 'Requirements analysis includes spotting vague and conflicting requirements.', answer: 'T' },
-    { type: 'tf', question: 'Requirements management is important throughout the software development life cycle.', answer: 'T' },
-    { type: 'tf', question: 'The analyst must understand users\' goals to define functional requirements.', answer: 'T' },
-    { type: 'tf', question: 'Effective requirements specifications facilitate system testing.', answer: 'T' },
-    // Multiple Choice Questions
-    { 
-    "type": "mc", 
-    "question": "Which characteristic ensures that each requirement fully describes the functionality to be delivered?", 
-    "options": ["a) Complete", "b) Correct", "c) Feasible", "d) Necessary"], 
-    "answer": "a) Complete" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Who determines the correctness of user requirements?", 
-    "options": ["a) Developers", "b) Users or their close surrogates", "c) Project managers", "d) Testers"], 
-    "answer": "b) Users or their close surrogates" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the role of a requirements analyst in a project?", 
-    "options": ["a) Developer", "b) Tester", "c) Communication middleman", "d) Project manager"], 
-    "answer": "c) Communication middleman" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is a primary activity performed by a requirements analyst?", 
-    "options": ["a) Writing code", "b) Testing software", "c) Defining business requirements", "d) Managing project timelines"], 
-    "answer": "c) Defining business requirements" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which of the following is a requirement gathering technique?", 
-    "options": ["a) Debugging", "b) Prototyping", "c) Code review", "d) System integration"], 
-    "answer": "b) Prototyping" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which characteristic of excellent requirements ensures that each requirement is possible to implement within the known capabilities and limitations of the system?", 
-    "options": ["a) Verifiable", "b) Prioritized", "c) Feasible", "d) Unambiguous"], 
-    "answer": "c) Feasible" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the purpose of assigning an implementation priority to each functional requirement?", 
-    "options": ["a) To indicate its correctness", "b) To indicate its feasibility", "c) To indicate how essential it is", "d) To indicate its completeness"], 
-    "answer": "c) To indicate how essential it is" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What should each requirement document according to the characteristic of being 'Necessary'?", 
-    "options": ["a) A capability that the developers need", "b) A capability that the customers really need", "c) A capability that the testers need", "d) A capability that the project managers need"], 
-    "answer": "b) A capability that the customers really need" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What should be done to ensure that requirement statements will satisfy user needs?", 
-    "options": ["a) Lead requirements validation", "b) Write code", "c) Conduct system integration", "d) Perform debugging"], 
-    "answer": "a) Lead requirements validation" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the first question to ask when defining business requirements?", 
-    "options": ["a) What is the budget?", "b) What is the timeline?", "c) Why are we undertaking this project?", "d) Who are the stakeholders?"], 
-    "answer": "c) Why are we undertaking this project?" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which technique is used to help users articulate the system capabilities they need?", 
-    "options": ["a) System integration", "b) Debugging", "c) Reverse engineering of existing systems", "d) Code review"], 
-    "answer": "c) Reverse engineering of existing systems" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which characteristic of excellent requirements ensures that all readers of a requirement statement arrive at a single, consistent interpretation?", 
-    "options": ["a) Feasible", "b) Unambiguous", "c) Verifiable", "d) Necessary"], 
-    "answer": "b) Unambiguous" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which activity involves looking for derived requirements and unstated requirements that customers seem to expect?", 
-    "options": ["a) Writing requirements specifications", "b) Analyzing requirements", "c) Managing requirements", "d) Leading requirements validation"], 
-    "answer": "b) Analyzing requirements" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the main responsibility of a requirements analyst?", 
-    "options": ["a) Writing code", "b) Testing software", "c) Gathering, analyzing, documenting, and validating the needs of the project stakeholders", "d) Managing project timelines"], 
-    "answer": "c) Gathering, analyzing, documenting, and validating the needs of the project stakeholders" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which activity does a requirements analyst perform to ensure that requirements were interpreted correctly?", 
-    "options": ["a) Writing code", "b) Conducting system integration", "c) Reviewing designs, code, and test cases", "d) Performing debugging"], 
-    "answer": "c) Reviewing designs, code, and test cases" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which source of requirements involves understanding the problems that users encounter with the current system?", 
-    "options": ["a) User questionnaires", "b) Observing users at work", "c) Problem reports and enhancement requests", "d) Scenario analysis of user tasks"], 
-    "answer": "c) Problem reports and enhancement requests" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which requirement characteristic ensures that it is possible to test or verify each requirement?", 
-    "options": ["a) Complete", "b) Feasible", "c) Verifiable", "d) Unambiguous"], 
-    "answer": "c) Verifiable" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the purpose of writing requirements specifications?", 
-    "options": ["a) To design the system", "b) To create test cases", "c) To express a shared understanding of the system", "d) To manage project timelines"], 
-    "answer": "c) To express a shared understanding of the system" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which activity involves conducting interviews, document analysis, and customer site visits?", 
-    "options": ["a) Writing requirements specifications", "b) Eliciting requirements", "c) Analyzing requirements", "d) Managing requirements"], 
-    "answer": "b) Eliciting requirements" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the primary function of a requirements analyst as a communication middleman?", 
-    "options": ["a) Managing project timelines", "b) Bridging the gap between customer notions and clear specifications", "c) Writing code", "d) Testing software"], 
-    "answer": "b) Bridging the gap between customer notions and clear specifications" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which source of requirements involves collecting data from potential users through surveys?", 
-    "options": ["a) Interviews", "b) Problem reports", "c) User questionnaires", "d) Observing users at work"], 
-    "answer": "c) User questionnaires" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the role of a requirements analyst in managing requirements?", 
-    "options": ["a) Writing code", "b) Testing software", "c) Reviewing and executing the project's requirements management plan", "d) Managing project timelines"], 
-    "answer": "c) Reviewing and executing the project's requirements management plan" 
-  },
-  { 
-    "type": "mc", 
-    "question": "What is the purpose of defining business requirements?", 
-    "options": ["a) To create test cases", "b) To write code", "c) To define the project's business objectives and the ultimate vision of what the system will be and do", "d) To manage project timelines"], 
-    "answer": "c) To define the project's business objectives and the ultimate vision of what the system will be and do" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which source of requirements involves deriving detailed software functional requirements from high-level system requirements?", 
-    "options": ["a) Interviews", "b) System requirements specifications", "c) User questionnaires", "d) Problem reports"], 
-    "answer": "b) System requirements specifications" 
-  },
-  { 
-    "type": "mc", 
-    "question": "Which requirement characteristic ensures that requirements are documented based on specific voice-of-the-customer input?", 
-    "options": ["a) Complete", "b) Correct", "c) Feasible", "d) Necessary"], 
-    "answer": "d) Necessary" 
-  },
-  ];
-
-
-
+        let questions = [...originalQuestions];
         let currentQuestionIndex = 0;
         let userAnswers = [];
-        let selectedTFCount = 0;
-        let selectedMCCount = 0;
-        let selectedQuestions = [];
+        let randomizeQuestions = true;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            updateRangeValues();
-            shuffleQuestions();
-        });
-
-        function updateRangeValues() {
-            const tfRange = document.getElementById('tfCount');
-            const mcRange = document.getElementById('mcCount');
-            tfRange.max = questions.filter(q => q.type === 'tf').length;
-            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        function toggleRandomize() {
+            randomizeQuestions = !randomizeQuestions;
+            document.getElementById('randomizeIcon').classList.toggle('inactive', !randomizeQuestions);
         }
 
-        function updateValue(id, value) {
-            document.getElementById(id).innerText = value;
-        }
-
-        function shuffleQuestions() {
-            for (let i = questions.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [questions[i], questions[j]] = [questions[j], questions[i]];
-            }
+        function updateValue(spanId, value) {
+            document.getElementById(spanId).textContent = value;
         }
 
         function startExam() {
-            selectedTFCount = parseInt(document.getElementById('tfCount').value);
-            selectedMCCount = parseInt(document.getElementById('mcCount').value);
-            selectedQuestions = getSelectedQuestions();
-            userAnswers = new Array(selectedQuestions.length).fill(null);
+            const selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            const selectedMCCount = parseInt(document.getElementById('mcCount').value);
+
+            let filteredQuestions = [
+                ...originalQuestions.filter(q => q.type === 'tf').slice(0, selectedTFCount),
+                ...originalQuestions.filter(q => q.type === 'mc').slice(0, selectedMCCount)
+            ];
+
+            if (randomizeQuestions) {
+                shuffleArray(filteredQuestions);
+            }
+
+            questions = filteredQuestions;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+
             document.getElementById('homeContainer').style.display = 'none';
-            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('prevBtn').style.display = 'none';
             document.getElementById('nextBtn').style.display = 'inline-block';
             document.getElementById('submitBtn').style.display = 'inline-block';
-            displayQuestion();
+            document.getElementById('restartExamBtn').style.display = 'inline-block';
+            document.getElementById('randomizeIcon').style.display = 'none'; // Hide randomize icon
+            displayQuestion(currentQuestionIndex);
         }
 
-        function getSelectedQuestions() {
-            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
-            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
-            return [...tfQuestions, ...mcQuestions];
-        }
+        function displayQuestion(index) {
+    const questionContainer = document.getElementById('questionsContainer');
+    const questionHeader = document.getElementById('questionHeader');
+    questionContainer.innerHTML = '';
 
-        function displayQuestion() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-            const questionObj = selectedQuestions[currentQuestionIndex];
-            const questionElement = document.createElement('div');
-            questionElement.classList.add('question', 'active');
-            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+    const question = questions[index];
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question active';
 
-            if (questionObj.type === 'tf') {
-                questionElement.innerHTML += `
-                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
-                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
-                `;
-            } else if (questionObj.type === 'mc') {
-                questionObj.options.forEach(option => {
-                    questionElement.innerHTML += `
-                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
-                    `;
-                });
-            }
-            container.appendChild(questionElement);
+    // Add question number and total number of questions
+    questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
 
-            if (userAnswers[currentQuestionIndex] !== null) {
-                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
-                if (selectedOption) selectedOption.checked = true;
+    questionDiv.innerHTML = `<p>${question.question}</p>`;
+
+    if (question.type === 'tf') {
+        questionDiv.innerHTML += `
+            <label><input type="radio" name="answer" value="T"> True</label><br>
+            <label><input type="radio" name="answer" value="F"> False</label>
+        `;
+    } else if (question.type === 'mc') {
+        question.options.forEach(option => {
+            questionDiv.innerHTML += `<label><input type="radio" name="answer" value="${option}"> ${option}</label><br>`;
+        });
+    }
+
+    questionContainer.appendChild(questionDiv);
+
+    if (userAnswers[index] !== undefined) {
+        document.querySelector(`input[name="answer"][value="${userAnswers[index]}"]`).checked = true;
+    }
+
+    document.getElementById('prevBtn').style.display = index > 0 ? 'inline-block' : 'none';
+    document.getElementById('nextBtn').style.display = index < questions.length - 1 ? 'inline-block' : 'none';
+}
+
+
+        function nextQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
             }
         }
 
         function prevQuestion() {
+            saveAnswer();
             if (currentQuestionIndex > 0) {
-                saveAnswer();
                 currentQuestionIndex--;
-                displayQuestion();
-            }
-        }
-
-        function nextQuestion() {
-            if (currentQuestionIndex < selectedQuestions.length - 1) {
-                saveAnswer();
-                currentQuestionIndex++;
-                displayQuestion();
+                displayQuestion(currentQuestionIndex);
             }
         }
 
@@ -366,40 +278,85 @@
 
         function submitExam() {
             saveAnswer();
-            let score = 0;
-            let correctAnswers = [];
-            selectedQuestions.forEach((question, index) => {
-                if (userAnswers[index] === question.answer) {
-                    score++;
-                } else {
-                    correctAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
-                }
-            });
 
             const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+            resultContainer.innerHTML = '';
 
-            if (score === selectedQuestions.length) {
-                resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
-            } else {
-                correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
-                    resultContainer.innerHTML += `
-                        <div class="result">
-                            <p>Question: ${question}</p>
-                            <p>Correct Answer: ${correctAnswer}</p>
-                            <p>Your Answer: ${userAnswer}</p>
-                        </div>
-                    `;
-                });
-            }
+            let correctCount = 0;
+            const scoreDiv = document.createElement('div');
+            scoreDiv.className = 'result';
+            scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
+            resultContainer.appendChild(scoreDiv);
+            questions.forEach((question, index) => {
+                const isCorrect = userAnswers[index] === question.answer;
+                if (isCorrect) correctCount++;
 
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result';
+                resultDiv.innerHTML = `
+                    <p>${question.question}</p>
+                    <p>Your answer: ${userAnswers[index]}</p>
+                    <p>Correct answer: ${question.answer}</p>
+                `;
+                resultContainer.appendChild(resultDiv);
+            });
+
+            document.getElementById('randomizeIcon').style.display = 'none';
+            document.getElementById('restartExamBtn').style.display = 'inline-block';
+            document.getElementById('questionsContainer').innerHTML = '';
             document.getElementById('prevBtn').style.display = 'none';
             document.getElementById('nextBtn').style.display = 'none';
             document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('homeContainer').style.display = 'block';
         }
+
+        function restartExam() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            document.getElementById('resultContainer').innerHTML = '';
+            document.getElementById('homeContainer').style.display = 'block';
+            document.getElementById('randomizeIcon').style.display = 'inline-block';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('restartExamBtn').style.display = 'none';
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Add this function to update the maximum value of the range inputs
+function updateRangeMaxValues() {
+    document.getElementById('tfCount').max = originalQuestions.filter(q => q.type === 'tf').length;
+    document.getElementById('mcCount').max = originalQuestions.filter(q => q.type === 'mc').length;
+}
+
+// Update the range max values on page load and when restarting the exam
+window.onload = updateRangeMaxValues;
+function restartExam() {
+    currentQuestionIndex = 0;
+    userAnswers = [];
+    document.getElementById('resultContainer').innerHTML = '';
+    document.getElementById('homeContainer').style.display = 'block';
+    document.getElementById('randomizeIcon').style.display = 'inline-block';
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('restartExamBtn').style.display = 'none';
+
+    // Update range inputs based on the number of questions available
+    updateRangeMaxValues();
+    
+    // Show number of remaining questions
+}
+
     </script>
 </body>
 </html>
+
+
 
 

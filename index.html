@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operating System</title>
+    <title>Programming Language</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -87,33 +87,33 @@
     </style>
 </head>
 <body>
-    <div class="header">Operating System</div>
+    <div class="header">Programming Language</div>
     <div class="container">
         <div id="chaptersContainer" class="chapters">
-            <a href="./ch1-1.html"><button class="chapter-btn" data-chapter="ch1">ch4</button></a>
+            <!-- <a href="./ch1-1.html"><button class="chapter-btn" data-chapter="ch1">ch4</button></a>
             <a href="./ch1-2.html"><button class="chapter-btn" data-chapter="ch1">ch5</button></a>
             <a href="./ch1-3.html"><button class="chapter-btn" data-chapter="ch1">6th-QUIZ</button></a>
-            <a href="./ch1-4.html"><button class="chapter-btn" data-chapter="ch1">7th-QUIZ</button></a>
-            <!-- <button class="chapter-btn" data-chapter="ch2">ch2</button>
-            <button class="chapter-btn" data-chapter="ch3">ch3</button>
-            <button class="chapter-btn" data-chapter="ch4">ch4</button>
+            <a href="./ch1-4.html"><button class="chapter-btn" data-chapter="ch1">7th-QUIZ</button></a> -->
+            <button class="chapter-btn" data-chapter="ch1">ch1</button>
+            <button class="chapter-btn" data-chapter="ch2&ch3">ch2&ch3</button>
+            <!-- <button class="chapter-btn" data-chapter="ch4">ch4</button>
             <button class="chapter-btn" data-chapter="ch5">ch5</button>
             <button class="chapter-btn" data-chapter="ch6">ch6</button>
             <button class="chapter-btn" data-chapter="ch7">ch7</button> -->
         </div>
-        <!-- <div id="testsContainer" class="tests hidden">
+        <div id="testsContainer" class="tests hidden">
             <a href="#" id="test1" class="test-btn" data-test="1">Exam 1</a>
             <a href="#" id="test2" class="test-btn" data-test="2">Exam 2</a>
             <a href="#" id="test3" class="test-btn" data-test="3">Exam 3</a>
             <a href="#" id="test4" class="test-btn" data-test="4">Exam 4</a>
-        </div> -->
+        </div>
     </div>
     <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
 
     <script>
         const links = {
             'ch1': ['./ch1-1.html', './ch1-2.html', './ch1-3.html', './ch1-4.html'],
-            'ch2': ['./ch2-1.html', './ch2-2.html', './ch2-3.html', './ch2-4.html'],
+            'ch2&ch3': ['./ch2-1.html', './ch2-2.html', './ch2-3.html', './ch2-4.html'],
             'ch3': ['./ch3-1.html', './ch3-2.html', './ch3-3.html', './ch3-4.html'],
             'ch4': ['./ch4-1.html', './ch4-2.html', './ch4-3.html', './ch4-4.html'],
             'ch5': ['./ch5-1.html', './ch5-2.html', './ch5-3.html', './ch5-4.html'],
@@ -127,7 +127,7 @@
                 document.getElementById('testsContainer').classList.remove('hidden');
                 const chapterLinks = links[chapter];
                 document.querySelectorAll('.test-btn').forEach((testButton, index) => {
-                    testButton.textContent = chapter + '-' + (index + 1);
+                    testButton.textContent = chapter + ' Exam' + (index + 1);
                     testButton.href = chapterLinks[index];
                 });
             });
