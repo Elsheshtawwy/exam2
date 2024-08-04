@@ -70,7 +70,7 @@ body {
         .result {
             padding: 10px;
             border: 1px solid #ccc;
-            margin-top: 10px;
+            margin-bottom: 10px;
             background-color: #e7f0ff;
         }
         footer {
@@ -106,7 +106,19 @@ body {
     font-size: 18px;
     margin-bottom: 10px;
 }
+.error-box {
+    border: 1px solid #ff0000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff5f5;
+}
 
+.correct-box {
+    border: 1px solid #00ff00;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e7ffe7;
+}
     </style>
 </head>
 <body>
@@ -135,26 +147,67 @@ body {
     <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
 <script>
         const originalQuestions = [
-{ type: 'tf', question: 'Writability of a programming language does not depend on its support for abstraction.', answer: 'F' },
-{ type: 'tf', question: 'Systems programming languages need to be efficient due to their continuous use.', answer: 'T' },
-{ type: 'tf', question: 'Hybrid implementation systems can be slower than pure interpreters.', answer: 'F' },
-{ type: 'tf', question: 'Functional programming languages do not use iteration and assignment statements.', answer: 'T' },
-{ type: 'tf', question: 'The ease of reading and understanding programs is known as readability.', answer: 'T' },
-{ type: 'tf', question: 'Type checking is the process of verifying that operations in a program are performed on compatible data types.', answer: 'T' },
-{ type: 'tf', question: 'High-level programming languages were developed in the 1950s and early 1960s.', answer: 'T' },
-{ type: 'tf', question: 'The compilation process does not include syntax analysis.', answer: 'F' },
-{ type: 'tf', question: 'Exception handling can take corrective measures during runtime errors.', answer: 'T' },
-{ type: 'tf', question: 'Preprocessors are used to compile high-level language programs.', answer: 'F' },
-{ type: 'tf', question: 'Aliasing does not impact the reliability of a programming language.', answer: 'F' },
-{ type: 'tf', question: 'Portability measures how easily programs can be moved across different systems.', answer: 'T' },
-{ type: 'tf', question: 'Object-oriented programming was introduced in the 1980s.', answer: 'T' },
-{ type: 'tf', question: 'Readability is not affected by the complexity of language constructs.', answer: 'F' },
-{ type: 'tf', question: 'Artificial intelligence applications do not use symbols.', answer: 'F' },
-{ type: 'tf', question: 'The compilation process is faster than pure interpretation.', answer: 'T' },
-{ type: 'tf', question: 'Machine languages require high-level abstractions for coding.', answer: 'F' },
-{ type: 'tf', question: 'Business applications do not use decimal numbers and characters.', answer: 'F' },
-{ type: 'tf', question: 'Lexical analysis is the first phase in the compilation process.', answer: 'T' },
-{ type: 'tf', question: 'The reliability of a programming language does not impact its total cost.', answer: 'F' },
+// { type: 'tf', question: 'Writability of a programming language does not depend on its support for abstraction.', answer: 'F' },
+// { type: 'tf', question: 'Systems programming languages need to be efficient due to their continuous use.', answer: 'T' },
+// { type: 'tf', question: 'Hybrid implementation systems can be slower than pure interpreters.', answer: 'F' },
+// { type: 'tf', question: 'Functional programming languages do not use iteration and assignment statements.', answer: 'T' },
+// { type: 'tf', question: 'The ease of reading and understanding programs is known as readability.', answer: 'T' },
+// { type: 'tf', question: 'Type checking is the process of verifying that operations in a program are performed on compatible data types.', answer: 'T' },
+// { type: 'tf', question: 'High-level programming languages were developed in the 1950s and early 1960s.', answer: 'T' },
+// { type: 'tf', question: 'The compilation process does not include syntax analysis.', answer: 'F' },
+// { type: 'tf', question: 'Exception handling can take corrective measures during runtime errors.', answer: 'T' },
+// { type: 'tf', question: 'Preprocessors are used to compile high-level language programs.', answer: 'F' },
+// { type: 'tf', question: 'Aliasing does not impact the reliability of a programming language.', answer: 'F' },
+// { type: 'tf', question: 'Portability measures how easily programs can be moved across different systems.', answer: 'T' },
+// { type: 'tf', question: 'Object-oriented programming was introduced in the 1980s.', answer: 'T' },
+// { type: 'tf', question: 'Readability is not affected by the complexity of language constructs.', answer: 'F' },
+// { type: 'tf', question: 'Artificial intelligence applications do not use symbols.', answer: 'F' },
+// { type: 'tf', question: 'The compilation process is faster than pure interpretation.', answer: 'T' },
+// { type: 'tf', question: 'Machine languages require high-level abstractions for coding.', answer: 'F' },
+// { type: 'tf', question: 'Business applications do not use decimal numbers and characters.', answer: 'F' },
+// { type: 'tf', question: 'Lexical analysis is the first phase in the compilation process.', answer: 'T' },
+// { type: 'tf', question: 'The reliability of a programming language does not impact its total cost.', answer: 'F' },
+
+    { type: 'tf', question: 'The major influences on language design are machine architecture and software development methodologies.', answer: 'T' },
+    { type: 'tf', question: 'Orthogonality in a programming language refers to the ability to define and use complex structures or operations.', answer: 'F' },
+    { type: 'tf', question: 'Readability is the ease with which programs can be read and understood.', answer: 'T' },
+    { type: 'tf', question: 'COBOL is primarily used for scientific applications.', answer: 'F' },
+    { type: 'tf', question: 'The von Neumann architecture influences the design of imperative programming languages.', answer: 'T' },
+    { type: 'tf', question: 'Logic programming languages use rule-based specifications.', answer: 'T' },
+    { type: 'tf', question: 'Object-oriented programming is based on data abstraction, inheritance, and polymorphism.', answer: 'T' },
+    { type: 'tf', question: 'Markup languages like XML and XHTML are primarily used for web software.', answer: 'T' },
+    { type: 'tf', question: 'Pure interpretation generally leads to slower execution compared to compilation.', answer: 'T' },
+    { type: 'tf', question: 'Type checking is an example of a writability feature.', answer: 'F' },
+    { type: 'tf', question: 'An assembler translates high-level languages into machine code.', answer: 'F' },
+    { type: 'tf', question: 'Exception handling refers to intercepting run-time errors and taking corrective actions.', answer: 'T' },
+    { type: 'tf', question: 'LISP is an example of a functional programming language.', answer: 'T' },
+    { type: 'tf', question: 'The syntax of a language influences its readability.', answer: 'T' },
+    { type: 'tf', question: 'Generality refers to a language\'s applicability to a wide range of applications.', answer: 'T' },
+    { type: 'tf', question: 'Compilation is the process where programs are directly executed by another program known as an interpreter.', answer: 'F' },
+    { type: 'tf', question: 'The cost of training programmers is not a significant factor in language evaluation.', answer: 'F' },
+    { type: 'tf', question: 'Imperative programming languages are primarily rule-based.', answer: 'F' },
+    { type: 'tf', question: 'Markup languages are not considered programming languages per se.', answer: 'T' },
+    { type: 'tf', question: 'Portability is the ease with which programs can be moved from one implementation to another.', answer: 'T' },
+    { type: 'mc', question: 'Which language is known for being used in business applications?', options: ['a) LISP', 'b) COBOL', 'c) Fortran', 'd) C'], answer: 'b) COBOL' },
+    { type: 'mc', question: 'What is the main feature of object-oriented programming?', options: ['a) Iteration', 'b) Data abstraction', 'c) Rule-based logic', 'd) Functional computation'], answer: 'b) Data abstraction' },
+    { type: 'mc', question: 'Which of the following is an example of a functional programming language?', options: ['a) C', 'b) LISP', 'c) Prolog', 'd) Java'], answer: 'b) LISP' },
+    { type: 'mc', question: 'What evaluation criterion involves the ease with which programs can be written?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'b) Writability' },
+    { type: 'mc', question: 'Which language is an example of a markup language?', options: ['a) XHTML', 'b) Python', 'c) Java', 'd) Prolog'], answer: 'a) XHTML' },
+    { type: 'mc', question: 'What is the focus of the evaluation criterion "readability"?', options: ['a) Ease of program execution', 'b) Ease of program understanding', 'c) Conformance to specifications', 'd) Ultimate total cost'], answer: 'b) Ease of program understanding' },
+    { type: 'mc', question: 'Which language is associated with artificial intelligence applications?', options: ['a) COBOL', 'b) LISP', 'c) Fortran', 'd) C'], answer: 'b) LISP' },
+    { type: 'mc', question: 'What programming methodology became important in the late 1960s focusing on readability and better control structures?', options: ['a) Object-oriented programming', 'b) Structured programming', 'c) Functional programming', 'd) Logic programming'], answer: 'b) Structured programming' },
+    { type: 'mc', question: 'Which programming language paradigm involves rules specified in no particular order?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Object-oriented'], answer: 'c) Logic' },
+    { type: 'mc', question: 'What is the primary purpose of a preprocessor in programming languages?', options: ['a) Compiling programs', 'b) Interpreting programs', 'c) Processing a program before compilation', 'd) Generating intermediate code'], answer: 'c) Processing a program before compilation' },
+    { type: 'mc', question: 'Which programming language is known for its use in scientific applications?', options: ['a) Fortran', 'b) COBOL', 'c) Java', 'd) Prolog'], answer: 'a) Fortran' },
+    { type: 'mc', question: 'In the von Neumann architecture, where are data and programs stored?', options: ['a) CPU', 'b) Memory', 'c) Disk', 'd) Network'], answer: 'b) Memory' },
+    { type: 'mc', question: 'What term describes the presence of two or more distinct referencing methods for the same memory location?', options: ['a) Aliasing', 'b) Type checking', 'c) Exception handling', 'd) Orthogonality'], answer: 'a) Aliasing' },
+    { type: 'mc', question: 'Which evaluation criterion involves the ultimate total cost of using a programming language?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'd) Cost' },
+    { type: 'mc', question: 'What type of programming language is primarily used to specify the layout of information in web documents?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Markup'], answer: 'd) Markup' },
+    { type: 'mc', question: 'What is the main goal of exception handling in programming languages?', options: ['a) To intercept run-time errors and take corrective measures', 'b) To ensure type safety', 'c) To simplify syntax', 'd) To improve performance'], answer: 'a) To intercept run-time errors and take corrective measures' },
+    { type: 'mc', question: 'Which programming paradigm is based on applying functions to given parameters?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Object-oriented'], answer: 'b) Functional' },
+
+
+
         ];
 
         let questions = [...originalQuestions];
@@ -206,9 +259,7 @@ body {
     const questionDiv = document.createElement('div');
     questionDiv.className = 'question active';
 
-    // Add question number and total number of questions
     questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
-
     questionDiv.innerHTML = `<p>${question.question}</p>`;
 
     if (question.type === 'tf') {
@@ -250,44 +301,53 @@ body {
         }
 
         function saveAnswer() {
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                userAnswers[currentQuestionIndex] = selectedOption.value;
-            }
-        }
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        userAnswers[currentQuestionIndex] = selectedOption.value;
+    }
+}
 
-        function submitExam() {
-            saveAnswer();
 
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = '';
+function submitExam() {
+    saveAnswer();
 
-            let correctCount = 0;
-            const scoreDiv = document.createElement('div');
-            scoreDiv.className = 'result';
-            scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
-            resultContainer.appendChild(scoreDiv);
-            questions.forEach((question, index) => {
-                const isCorrect = userAnswers[index] === question.answer;
-                if (isCorrect) correctCount++;
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
 
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result';
-                resultDiv.innerHTML = `
-                    <p>${question.question}</p>
-                    <p>Your answer: ${userAnswers[index]}</p>
-                    <p>Correct answer: ${question.answer}</p>
-                `;
-                resultContainer.appendChild(resultDiv);
-            });
+    let correctCount = 0; // يجب أن يتم تعريف correctCount قبل حلقة forEach
 
-            document.getElementById('randomizeIcon').style.display = 'none';
-            document.getElementById('restartExamBtn').style.display = 'inline-block';
-            document.getElementById('questionsContainer').innerHTML = '';
-            document.getElementById('prevBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('submitBtn').style.display = 'none';
-        }
+    questions.forEach((question, index) => {
+        const isCorrect = userAnswers[index] === question.answer;
+        if (isCorrect) correctCount++;
+
+        const resultDiv = document.createElement('div');
+        resultDiv.className = isCorrect ? 'correct-box' : 'error-box';
+        resultDiv.innerHTML = `
+            <p>${question.question}</p>
+            <p>Your answer: ${userAnswers[index]}</p>
+            <p>Correct answer: ${question.answer}</p>
+        `;
+        resultContainer.appendChild(resultDiv);
+    });
+
+    const scoreDiv = document.createElement('div'); // يجب إنشاء scoreDiv بعد حلقة forEach
+    scoreDiv.className = 'result';
+    scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
+
+    resultContainer.appendChild(scoreDiv);
+
+    document.getElementById('randomizeIcon').style.display = 'none';
+    document.getElementById('restartExamBtn').style.display = 'inline-block';
+    document.getElementById('questionsContainer').innerHTML = '';
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+}
+
+
+
+
+
 
         function restartExam() {
             currentQuestionIndex = 0;

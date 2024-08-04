@@ -70,7 +70,7 @@ body {
         .result {
             padding: 10px;
             border: 1px solid #ccc;
-            margin-top: 10px;
+            margin-bottom: 10px;
             background-color: #e7f0ff;
         }
         footer {
@@ -102,9 +102,22 @@ body {
             margin-bottom: 10px;
             background-color: #fff5f5;
         }
-        #questionHeader {
+         #questionHeader {
     font-size: 18px;
     margin-bottom: 10px;
+}
+.error-box {
+    border: 1px solid #ff0000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff5f5;
+}
+
+.correct-box {
+    border: 1px solid #00ff00;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e7ffe7;
 }
 
     </style>
@@ -135,29 +148,66 @@ body {
     <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
 <script>
         const originalQuestions = [
-        { type: 'tf', question: 'The semantic analysis phase in compilation generates intermediate code.', answer: 'F' },
-    { type: 'tf', question: 'Functional languages compute by applying functions to parameters.', answer: 'T' },
-    { type: 'tf', question: 'Portability in a programming language affects its applicability across different systems.', answer: 'T' },
-    { type: 'tf', question: 'The late 1970s saw a shift from process-oriented to data-oriented programming methodologies.', answer: 'T' },
-    { type: 'tf', question: 'Imperative languages focus primarily on functions and parameters.', answer: 'F' },
-    { type: 'tf', question: 'Hybrid implementation systems interpret high-level language programs directly.', answer: 'F' },
-    { type: 'tf', question: 'Lexical analysis in compilation converts source program characters into lexical units.', answer: 'T' },
-    { type: 'tf', question: 'Object-oriented programming does not support inheritance.', answer: 'F' },
-    { type: 'tf', question: 'Machine languages are human-readable and easy to write.', answer: 'F' },
-    { type: 'tf', question: 'Pure interpretation often requires more space compared to compiled programs.', answer: 'T' },
-    { type: 'tf', question: 'The ultimate total cost of a programming language includes factors such as training and maintenance.', answer: 'T' },
-    { type: 'tf', question: 'LISP is primarily used for systems programming due to its efficiency.', answer: 'F' },
-    { type: 'tf', question: 'Better control structures were a major focus in programming methodologies during the late 1960s.', answer: 'T' },
-    { type: 'tf', question: 'Generality in a programming language refers to its applicability to a narrow range of applications.', answer: 'F' },
-    { type: 'tf', question: 'Data abstraction was a key feature in object-oriented programming methodologies of the mid-1980s.', answer: 'T' },
-    { type: 'tf', question: 'Markup languages are used to specify the layout of information in web documents.', answer: 'T' },
-    { type: 'tf', question: 'Machine language programs are executed directly by the computer’s hardware.', answer: 'T' },
-    { type: 'tf', question: 'The presence of adequate facilities for defining data structures is part of writability evaluation.', answer: 'T' },
-    { type: 'tf', question: 'Aliasing can lead to errors if different references modify the same memory location.', answer: 'T' },
-    { type: 'tf', question: 'The Fetch-execute-cycle describes the sequence of actions performed by the CPU to execute instructions.', answer: 'T' },
-    
+    //     { type: 'tf', question: 'The semantic analysis phase in compilation generates intermediate code.', answer: 'F' },
+    // { type: 'tf', question: 'Functional languages compute by applying functions to parameters.', answer: 'T' },
+    // { type: 'tf', question: 'Portability in a programming language affects its applicability across different systems.', answer: 'T' },
+    // { type: 'tf', question: 'The late 1970s saw a shift from process-oriented to data-oriented programming methodologies.', answer: 'T' },
+    // { type: 'tf', question: 'Imperative languages focus primarily on functions and parameters.', answer: 'F' },
+    // { type: 'tf', question: 'Hybrid implementation systems interpret high-level language programs directly.', answer: 'F' },
+    // 
+    // { type: 'tf', question: 'Object-oriented programming does not support inheritance.', answer: 'F' },
+    // { type: 'tf', question: 'Machine languages are human-readable and easy to write.', answer: 'F' },
+    // { type: 'tf', question: 'Pure interpretation often requires more space compared to compiled programs.', answer: 'T' },
+    // { type: 'tf', question: 'The ultimate total cost of a programming language includes factors such as training and maintenance.', answer: 'T' },
+    // { type: 'tf', question: 'LISP is primarily used for systems programming due to its efficiency.', answer: 'F' },
+    // { type: 'tf', question: 'Better control structures were a major focus in programming methodologies during the late 1960s.', answer: 'T' },
+    // { type: 'tf', question: 'Generality in a programming language refers to its applicability to a narrow range of applications.', answer: 'F' },
+    // { type: 'tf', question: 'Data abstraction was a key feature in object-oriented programming methodologies of the mid-1980s.', answer: 'T' },
+    // { type: 'tf', question: 'Markup languages are used to specify the layout of information in web documents.', answer: 'T' },
+    // { type: 'tf', question: 'Machine language programs are executed directly by the computer’s hardware.', answer: 'T' },
+    // { type: 'tf', question: 'The presence of adequate facilities for defining data structures is part of writability evaluation.', answer: 'T' },
+    // { type: 'tf', question: 'Aliasing can lead to errors if different references modify the same memory location.', answer: 'T' },
+    // { type: 'tf', question: 'The Fetch-execute-cycle describes the sequence of actions performed by the CPU to execute instructions.', answer: 'T' },
+  { type: 'tf', question: 'Increased ability to express ideas is one of the reasons for studying concepts of programming languages.', answer: 'T' },
+  { type: 'tf', question: 'Orthogonality in programming languages refers to having a large set of primitive constructs.', answer: 'F' },
+  { type: 'tf', question: 'COBOL is commonly used for business applications because it can produce reports and use decimal numbers and characters.', answer: 'T' },
+  { type: 'tf', question: 'The overall simplicity of a programming language does not contribute to its readability.', answer: 'F' },
+  { type: 'tf', question: 'Syntax considerations in language evaluation criteria include identifier forms and special words.', answer: 'T' },
+  { type: 'tf', question: 'Aliasing refers to the presence of multiple distinct referencing methods for the same memory location.', answer: 'T' },
+  { type: 'tf', question: 'Exception handling is a feature of reliability in programming languages.', answer: 'T' },
+  { type: 'tf', question: 'The cost of writing programs is higher when the language is close to the application domain.', answer: 'F' },
+  { type: 'tf', question: 'The von Neumann architecture stores data and programs in separate memories.', answer: 'F' },
+  { type: 'tf', question: 'Functional programming languages use functions as the primary means of computation.', answer: 'T' },
+  { type: 'tf', question: 'Logic programming languages are based on specifying rules in a particular order.', answer: 'F' },
+  { type: 'tf', question: 'Markup languages like XHTML and XML are primarily used to specify the layout of information in web documents.', answer: 'T' },
+  { type: 'tf', question: 'Pure interpretation involves programs being translated into machine language.', answer: 'F' },
+  { type: 'tf', question: 'Lexical analysis is the first phase of the compilation process.', answer: 'T' },
+  { type: 'tf', question: 'The compilation process does not include semantics analysis.', answer: 'F' },
+  { type: 'tf', question: 'Preprocessors expand embedded macros before the program is compiled.', answer: 'T' },
+  { type: 'tf', question: 'The fetch-execute cycle is a part of the von Neumann architecture.', answer: 'T' },
+  { type: 'tf', question: 'Portability is the ability of a program to be moved from one implementation to another easily.', answer: 'T' },
+  { type: 'tf', question: 'Imperative programming languages are characterized by variables, assignment statements, and iteration.', answer: 'T' },
+  { type: 'tf', question: 'Object-oriented programming does not include concepts like inheritance and polymorphism.', answer: 'F' },
+  { type: 'mc', question: 'Which programming domain uses LISP?', options: ['a) Scientific applications', 'b) Business applications', 'c) Artificial intelligence', 'd) Systems programming'], answer: 'c) Artificial intelligence' },
+  { type: 'mc', question: 'Which language is known for its efficiency due to continuous use in systems programming?', options: ['a) Fortran', 'b) COBOL', 'c) LISP', 'd) C'], answer: 'd) C' },
+  { type: 'mc', question: 'What does readability in programming languages refer to?', options: ['a) Ease of learning new languages', 'b) Conformance to specifications', 'c) Ease with which programs can be read and understood', 'd) Total cost of using the language'], answer: 'c) Ease with which programs can be read and understood' },
+  { type: 'mc', question: 'Which programming language is an example of a markup language?', options: ['a) Java', 'b) PHP', 'c) XHTML', 'd) Scheme'], answer: 'c) XHTML' },
+  { type: 'mc', question: 'What does the evaluation criterion of reliability include?', options: ['a) Simplicity and orthogonality', 'b) Support for abstraction', 'c) Type checking and exception handling', 'd) Training programmers'], answer: 'c) Type checking and exception handling' },
+  { type: 'mc', question: 'Which of the following languages is known for its use in web software?', options: ['a) Java', 'b) PHP', 'c) Fortran', 'd) COBOL'], answer: 'b) PHP' },
+  { type: 'mc', question: 'What does orthogonality in a programming language imply?', options: ['a) Complex set of features', 'b) Few primitive constructs combined in limited ways', 'c) High readability', 'd) High cost'], answer: 'b) Few primitive constructs combined in limited ways' },
+  { type: 'mc', question: 'Which method of programming language implementation translates programs into machine language?', options: ['a) Compilation', 'b) Pure interpretation', 'c) Hybrid implementation', 'd) Preprocessing'], answer: 'a) Compilation' },
+  { type: 'mc', question: 'What is the primary focus of imperative programming languages?', options: ['a) Applying functions', 'b) Specifying rules', 'c) Variables and iteration', 'd) Specifying layout of information'], answer: 'c) Variables and iteration' },
+  { type: 'mc', question: 'Which programming methodology includes data abstraction, inheritance, and polymorphism?', options: ['a) Structured programming', 'b) Top-down design', 'c) Object-oriented programming', 'd) Process-oriented programming'], answer: 'c) Object-oriented programming' },
+  { type: 'mc', question: 'What is the main purpose of lexical analysis in the compilation process?', options: ['a) Syntax analysis', 'b) Generating intermediate code', 'c) Converting characters into lexical units', 'd) Generating machine code'], answer: 'c) Converting characters into lexical units' },
+  { type: 'mc', question: 'Which of the following is a benefit of pure interpretation?', options: ['a) Faster execution', 'b) Easier program implementation', 'c) Smaller space requirement', 'd) Easier debugging'], answer: 'd) Easier debugging' },
+  { type: 'mc', question: 'Which language category is characterized by rule-based programming?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Object-oriented'], answer: 'c) Logic' },
+  { type: 'mc', question: 'What is one of the reasons for studying programming languages?', options: ['a) Increased complexity of ideas', 'b) Decreased ability to choose appropriate languages', 'c) Better understanding of implementation significance', 'd) Reduced ability to learn new languages'], answer: 'c) Better understanding of implementation significance' },
+  { type: 'mc', question: 'Which language is commonly used for scientific applications involving floating-point computations?', options: ['a) COBOL', 'b) LISP', 'c) Fortran', 'd) Java'], answer: 'c) Fortran' },
+  { type: 'mc', question: 'Which evaluation criterion involves the total cost of using the programming language?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'd) Cost' }
+
         ];
 
+               
         let questions = [...originalQuestions];
         let currentQuestionIndex = 0;
         let userAnswers = [];
@@ -207,9 +257,7 @@ body {
     const questionDiv = document.createElement('div');
     questionDiv.className = 'question active';
 
-    // Add question number and total number of questions
     questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
-
     questionDiv.innerHTML = `<p>${question.question}</p>`;
 
     if (question.type === 'tf') {
@@ -251,44 +299,53 @@ body {
         }
 
         function saveAnswer() {
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                userAnswers[currentQuestionIndex] = selectedOption.value;
-            }
-        }
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        userAnswers[currentQuestionIndex] = selectedOption.value;
+    }
+}
 
-        function submitExam() {
-            saveAnswer();
 
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = '';
+    function submitExam() {
+    saveAnswer();
 
-            let correctCount = 0;
-            const scoreDiv = document.createElement('div');
-            scoreDiv.className = 'result';
-            scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
-            resultContainer.appendChild(scoreDiv);
-            questions.forEach((question, index) => {
-                const isCorrect = userAnswers[index] === question.answer;
-                if (isCorrect) correctCount++;
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
 
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result';
-                resultDiv.innerHTML = `
-                    <p>${question.question}</p>
-                    <p>Your answer: ${userAnswers[index]}</p>
-                    <p>Correct answer: ${question.answer}</p>
-                `;
-                resultContainer.appendChild(resultDiv);
-            });
+    let correctCount = 0; // يجب أن يتم تعريف correctCount قبل حلقة forEach
 
-            document.getElementById('randomizeIcon').style.display = 'none';
-            document.getElementById('restartExamBtn').style.display = 'inline-block';
-            document.getElementById('questionsContainer').innerHTML = '';
-            document.getElementById('prevBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('submitBtn').style.display = 'none';
-        }
+    questions.forEach((question, index) => {
+        const isCorrect = userAnswers[index] === question.answer;
+        if (isCorrect) correctCount++;
+
+        const resultDiv = document.createElement('div');
+        resultDiv.className = isCorrect ? 'correct-box' : 'error-box';
+        resultDiv.innerHTML = `
+            <p>${question.question}</p>
+            <p>Your answer: ${userAnswers[index]}</p>
+            <p>Correct answer: ${question.answer}</p>
+        `;
+        resultContainer.appendChild(resultDiv);
+    });
+
+    const scoreDiv = document.createElement('div'); // يجب إنشاء scoreDiv بعد حلقة forEach
+    scoreDiv.className = 'result';
+    scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
+
+    resultContainer.appendChild(scoreDiv);
+
+    document.getElementById('randomizeIcon').style.display = 'none';
+    document.getElementById('restartExamBtn').style.display = 'inline-block';
+    document.getElementById('questionsContainer').innerHTML = '';
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+}
+
+
+
+
+
 
         function restartExam() {
             currentQuestionIndex = 0;

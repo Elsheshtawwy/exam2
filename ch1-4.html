@@ -70,7 +70,7 @@ body {
         .result {
             padding: 10px;
             border: 1px solid #ccc;
-            margin-top: 10px;
+            margin-bottom: 10px;
             background-color: #e7f0ff;
         }
         footer {
@@ -102,9 +102,22 @@ body {
             margin-bottom: 10px;
             background-color: #fff5f5;
         }
-        #questionHeader {
+         #questionHeader {
     font-size: 18px;
     margin-bottom: 10px;
+}
+.error-box {
+    border: 1px solid #ff0000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff5f5;
+}
+
+.correct-box {
+    border: 1px solid #00ff00;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e7ffe7;
 }
 
     </style>
@@ -135,28 +148,51 @@ body {
     <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
 <script>
         const originalQuestions = [
-        { type: 'tf', question: 'Exception handling does not improve the reliability of a programming language.', answer: 'F' },
-{ type: 'tf', question: 'The overall simplicity of a programming language does not affect its readability.', answer: 'F' },
-{ type: 'tf', question: 'High-level languages are not influenced by computer architecture.', answer: 'F' },
-{ type: 'tf', question: 'Compilation involves phases such as lexical analysis, syntax analysis, and code generation.', answer: 'T' },
-{ type: 'tf', question: 'Object-oriented languages emphasize the use of functions over data abstraction.', answer: 'F' },
-{ type: 'tf', question: 'Readability and writability do not contribute to the cost of a programming language.', answer: 'F' },
-{ type: 'tf', question: 'The von Neumann architecture has a single storage structure for both instructions and data.', answer: 'T' },
-{ type: 'tf', question: 'Artificial intelligence applications manipulate symbols rather than numbers.', answer: 'T' },
-{ type: 'tf', question: 'Preprocessors expand embedded macros before program compilation.', answer: 'T' },
-{ type: 'tf', question: 'COBOL is not suitable for business applications due to its lack of support for decimal numbers.', answer: 'F' },
-{ type: 'tf', question: 'Orthogonality in programming languages allows for a combination of a small set of constructs in many ways.', answer: 'T' },
-{ type: 'tf', question: 'Reliability in a programming language ensures that it conforms to its specifications.', answer: 'T' },
-{ type: 'tf', question: 'Portability is not a significant factor in the cost of maintaining programs.', answer: 'F' },
-{ type: 'tf', question: 'Imperative languages do not use assignment statements as a central feature.', answer: 'F' },
-{ type: 'tf', question: 'The presence of two distinct referencing methods for the same memory location is known as aliasing.', answer: 'T' },
-{ type: 'tf', question: 'Exception handling is crucial for dealing with runtime errors in programming languages.', answer: 'T' },
-{ type: 'tf', question: 'Compilation results in the immediate execution of programs.', answer: 'F' },
-{ type: 'tf', question: 'Memory in the von Neumann architecture is divided into separate sections for data and instructions.', answer: 'F' },
-{ type: 'tf', question: 'High-level languages often require more space and have slower execution than machine languages.', answer: 'T' },
-{ type: 'tf', question: 'The object-oriented programming paradigm includes features like inheritance and polymorphism.', answer: 'T' },
-        ];
+        { type: 'tf', question: 'Writability of a programming language does not depend on its support for abstraction.', answer: 'F' },
+    { type: 'tf', question: 'Systems programming languages need to be efficient due to their continuous use.', answer: 'T' },
+    { type: 'tf', question: 'Hybrid implementation systems can be slower than pure interpreters.', answer: 'F' },
+    { type: 'tf', question: 'Functional programming languages do not use iteration and assignment statements.', answer: 'T' },
+    { type: 'tf', question: 'The ease of reading and understanding programs is known as readability.', answer: 'T' },
+    { type: 'tf', question: 'Type checking is the process of verifying that operations in a program are performed on compatible data types.', answer: 'T' },
+    { type: 'tf', question: 'High-level programming languages were developed in the 1950s and early 1960s.', answer: 'T' },
+    { type: 'tf', question: 'The compilation process does not include syntax analysis.', answer: 'F' },
+    { type: 'tf', question: 'Exception handling can take corrective measures during runtime errors.', answer: 'T' },
+    { type: 'tf', question: 'Aliasing can lead to errors if different references modify the same memory location.', answer: 'T' },
+    { type: 'tf', question: 'Aliasing does not impact the reliability of a programming language.', answer: 'F' },
+    { type: 'tf', question: 'Portability measures how easily programs can be moved across different systems.', answer: 'T' },
+    { type: 'tf', question: 'Object-oriented programming was introduced in the 1980s.', answer: 'T' },
+    { type: 'tf', question: 'Reliability in a programming language ensures that it conforms to its specifications.', answer: 'T' },
+    { type: 'tf', question: 'Artificial intelligence applications do not use symbols.', answer: 'F' },
+    { type: 'tf', question: 'The compilation process is faster than pure interpretation.', answer: 'T' },
+    { type: 'tf', question: 'Machine languages require high-level abstractions for coding.', answer: 'F' },
+    { type: 'tf', question: 'Business applications do not use decimal numbers and characters.', answer: 'F' },
+    { type: 'tf', question: 'Lexical analysis is the first phase in the compilation process.', answer: 'T' },
+    { type: 'tf', question: 'The reliability of a programming language does not impact its total cost.', answer: 'F' },
 
+        { type: 'mc', question: 'What is one of the key reasons for studying the concepts of programming languages?', options: ['a) Increased ability to learn new languages', 'b) Decreased computational power', 'c) Reduced cost of hardware', 'd) Simplified user interfaces'], answer: 'a) Increased ability to learn new languages' },
+  { type: 'mc', question: 'Which programming domain is specifically mentioned as requiring large numbers of floating-point computations?', options: ['a) Business applications', 'b) Artificial intelligence', 'c) Scientific applications', 'd) Systems programming'], answer: 'c) Scientific applications' },
+  { type: 'mc', question: 'Which language is typically used for business applications according to the document?', options: ['a) LISP', 'b) COBOL', 'c) Fortran', 'd) C'], answer: 'b) COBOL' },
+  { type: 'mc', question: 'In the context of programming domains, which language is associated with artificial intelligence?', options: ['a) Java', 'b) Python', 'c) LISP', 'd) C++'], answer: 'c) LISP' },
+  { type: 'mc', question: 'Which programming domain needs efficiency because of continuous use?', options: ['a) Web Software', 'b) Systems programming', 'c) Business applications', 'd) Artificial intelligence'], answer: 'b) Systems programming' },
+  { type: 'mc', question: 'Which language is primarily used for systems programming?', options: ['a) C', 'b) Fortran', 'c) COBOL', 'd) Java'], answer: 'a) C' },
+  { type: 'mc', question: 'Which programming domain includes a collection of languages such as XHTML, PHP, and Java?', options: ['a) Scientific applications', 'b) Business applications', 'c) Web Software', 'd) Systems programming'], answer: 'c) Web Software' },
+  { type: 'mc', question: 'What is one of the most important criteria for evaluating programming languages?', options: ['a) Number of developers', 'b) Readability', 'c) Market share', 'd) Licensing costs'], answer: 'b) Readability' },
+  { type: 'mc', question: 'Which criterion involves the ease with which programs can be read and understood?', options: ['a) Writability', 'b) Reliability', 'c) Cost', 'd) Readability'], answer: 'd) Readability' },
+  { type: 'mc', question: 'What does the criterion of writability refer to?', options: ['a) Ease of learning a language', 'b) Conformance to specifications', 'c) Ease of creating programs', 'd) Cost of running programs'], answer: 'c) Ease of creating programs' },
+  { type: 'mc', question: 'Which of the following refers to the conformance to specifications?', options: ['a) Writability', 'b) Reliability', 'c) Readability', 'd) Cost'], answer: 'b) Reliability' },
+  { type: 'mc', question: 'Which criterion is associated with the ultimate total cost of using a programming language?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'd) Cost' },
+  { type: 'mc', question: 'Which aspect of readability refers to a manageable set of features and constructs?', options: ['a) Orthogonality', 'b) Overall simplicity', 'c) Control statements', 'd) Data types and structures'], answer: 'b) Overall simplicity' },
+  { type: 'mc', question: 'What does orthogonality in programming languages mean?', options: ['a) A large number of primitive constructs', 'b) A set of constructs combined in a limited number of ways', 'c) The presence of control statements', 'd) Flexibility in syntax'], answer: 'b) A set of constructs combined in a limited number of ways' },
+  { type: 'mc', question: 'What is the importance of syntax considerations in readability?', options: ['a) Ensuring code compiles', 'b) Managing variable scope', 'c) Defining data structures', 'd) Making identifiers flexible and meaningful'], answer: 'd) Making identifiers flexible and meaningful' },
+  { type: 'mc', question: 'Which evaluation criterion involves a small number of primitives and rules for combining them?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'a) Readability' },
+  { type: 'mc', question: 'Which feature of writability allows the definition and use of complex structures or operations?', options: ['a) Simplicity', 'b) Orthogonality', 'c) Support for abstraction', 'd) Expressivity'], answer: 'c) Support for abstraction' },
+  { type: 'mc', question: 'What does expressivity in writability entail?', options: ['a) A set of convenient ways of specifying operations', 'b) Reducing the number of keywords', 'c) Increasing the number of language features', 'd) Simplifying control structures'], answer: 'a) A set of convenient ways of specifying operations' },
+  { type: 'mc', question: 'What does type checking help ensure in terms of reliability?', options: ['a) Correctness of data types', 'b) Flexibility of syntax', 'c) Speed of execution', 'd) Cost reduction'], answer: 'a) Correctness of data types' },
+  { type: 'mc', question: 'What is the role of exception handling in programming languages?', options: ['a) Compiling code efficiently', 'b) Intercepting run-time errors and taking corrective measures', 'c) Improving readability', 'd) Reducing memory usage'], answer: 'b) Intercepting run-time errors and taking corrective measures' },
+
+];
+
+               
         let questions = [...originalQuestions];
         let currentQuestionIndex = 0;
         let userAnswers = [];
@@ -206,9 +242,7 @@ body {
     const questionDiv = document.createElement('div');
     questionDiv.className = 'question active';
 
-    // Add question number and total number of questions
     questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
-
     questionDiv.innerHTML = `<p>${question.question}</p>`;
 
     if (question.type === 'tf') {
@@ -250,44 +284,52 @@ body {
         }
 
         function saveAnswer() {
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                userAnswers[currentQuestionIndex] = selectedOption.value;
-            }
-        }
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        userAnswers[currentQuestionIndex] = selectedOption.value;
+    }
+}
 
-        function submitExam() {
-            saveAnswer();
 
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = '';
+function submitExam() {
+    saveAnswer();
 
-            let correctCount = 0;
-            const scoreDiv = document.createElement('div');
-            scoreDiv.className = 'result';
-            scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
-            resultContainer.appendChild(scoreDiv);
-            questions.forEach((question, index) => {
-                const isCorrect = userAnswers[index] === question.answer;
-                if (isCorrect) correctCount++;
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
 
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result';
-                resultDiv.innerHTML = `
-                    <p>${question.question}</p>
-                    <p>Your answer: ${userAnswers[index]}</p>
-                    <p>Correct answer: ${question.answer}</p>
-                `;
-                resultContainer.appendChild(resultDiv);
-            });
+    let correctCount = 0; // يجب أن يتم تعريف correctCount قبل حلقة forEach
 
-            document.getElementById('randomizeIcon').style.display = 'none';
-            document.getElementById('restartExamBtn').style.display = 'inline-block';
-            document.getElementById('questionsContainer').innerHTML = '';
-            document.getElementById('prevBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('submitBtn').style.display = 'none';
-        }
+    questions.forEach((question, index) => {
+        const isCorrect = userAnswers[index] === question.answer;
+        if (isCorrect) correctCount++;
+
+        const resultDiv = document.createElement('div');
+        resultDiv.className = isCorrect ? 'correct-box' : 'error-box';
+        resultDiv.innerHTML = `
+            <p>${question.question}</p>
+            <p>Your answer: ${userAnswers[index]}</p>
+            <p>Correct answer: ${question.answer}</p>
+        `;
+        resultContainer.appendChild(resultDiv);
+    });
+
+    const scoreDiv = document.createElement('div'); // يجب إنشاء scoreDiv بعد حلقة forEach
+    scoreDiv.className = 'result';
+    scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
+
+    resultContainer.appendChild(scoreDiv);
+
+    document.getElementById('randomizeIcon').style.display = 'none';
+    document.getElementById('restartExamBtn').style.display = 'inline-block';
+    document.getElementById('questionsContainer').innerHTML = '';
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+}
+
+
+
+
 
         function restartExam() {
             currentQuestionIndex = 0;

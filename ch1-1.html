@@ -70,7 +70,7 @@
                 .result {
                     padding: 10px;
                     border: 1px solid #ccc;
-                    margin-top: 10px;
+                    margin-bottom: 10px;
                     background-color: #e7f0ff;
                 }
                 footer {
@@ -102,10 +102,23 @@
                     margin-bottom: 10px;
                     background-color: #fff5f5;
                 }
-                #questionHeader {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
+ #questionHeader {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.error-box {
+    border: 1px solid #ff0000;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff5f5;
+}
+
+.correct-box {
+    border: 1px solid #00ff00;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #e7ffe7;
+}
         
             </style>
         </head>
@@ -136,198 +149,227 @@
         <script>
                 const originalQuestions = [
                    // True/False Questions
-                   { type: 'tf', question: 'Increased ability to express ideas is one reason for studying concepts of programming languages.', answer: 'T' },
-            { type: 'tf', question: 'COBOL is commonly used for scientific applications.', answer: 'F' },
-            { type: 'tf', question: 'Reliability is the ease with which programs can be read and understood.', answer: 'F' },
-            { type: 'tf', question: 'Data types and structures are part of the evaluation criteria for readability.', answer: 'T' },
-            { type: 'tf', question: 'Exception handling refers to the testing for type errors.', answer: 'F' },
-            { type: 'tf', question: 'Training programmers to use a language is considered a cost factor in language evaluation.', answer: 'T' },
-            { type: 'tf', question: 'Portability is the ease with which programs can be moved from one implementation to another.', answer: 'T' },
-            { type: 'tf', question: 'Functional languages primarily use variables and assignment statements.', answer: 'F' },
-            { type: 'tf', question: 'Compilation involves translating programs into machine language.', answer: 'T' },
-            { type: 'tf', question: 'The compilation process includes lexical analysis and syntax analysis.', answer: 'T' },
-            { type: 'tf', question: 'Load module refers to a high-level language program.', answer: 'F' },
-            { type: 'tf', question: 'Machine language is considered a high-level language.', answer: 'F' },
-            { type: 'tf', question: 'Assembly language is easier for humans to understand than machine language.', answer: 'T' },
-            { type: 'tf', question: 'High-level languages allow programmers to write programs closer to natural language.', answer: 'T' },
-            { type: 'tf', question: 'Object-oriented programming focuses on data abstraction, inheritance, and late binding.', answer: 'T' },
-            { type: 'tf', question: 'Von Neumann architecture stores data and programs in memory.', answer: 'T' },
-            { type: 'tf', question: 'In imperative languages, iteration and assignment statements are central features.', answer: 'T' },
-            { type: 'tf', question: 'Compilation generates machine code from source code.', answer: 'T' },
-            { type: 'tf', question: 'Readability and writability are important criteria for language evaluation.', answer: 'T' },
-            { type: 'tf', question: 'Systems programming requires languages that prioritize efficiency.', answer: 'T' },
-            // Multiple Choice Questions
-            { type: 'mc', question: 'What is one of the key reasons for studying the concepts of programming languages?', options: ['a) Increased ability to learn new languages', 'b) Decreased computational power', 'c) Reduced cost of hardware', 'd) Simplified user interfaces'], answer: 'a) Increased ability to learn new languages' },
-            { type: 'mc', question: 'Which programming domain is specifically mentioned as requiring large numbers of floating-point computations?', options: ['a) Business applications', 'b) Artificial intelligence', 'c) Scientific applications', 'd) Systems programming'], answer: 'c) Scientific applications' },
-            { type: 'mc', question: 'Which language is typically used for business applications according to the document?', options: ['a) LISP', 'b) COBOL', 'c) Fortran', 'd) C'], answer: 'b) COBOL' },
-            { type: 'mc', question: 'In the context of programming domains, which language is associated with artificial intelligence?', options: ['a) Java', 'b) Python', 'c) LISP', 'd) C++'], answer: 'c) LISP' },
-            { type: 'mc', question: 'Which programming domain needs efficiency because of continuous use?', options: ['a) Web Software', 'b) Systems programming', 'c) Business applications', 'd) AI programming'], answer: 'b) Systems programming' },
-            { type: 'mc', question: 'What is a crucial factor when evaluating programming languages for reliability?', options: ['a) Cost', 'b) Portability', 'c) Readability', 'd) Writability'], answer: 'c) Readability' },
-            { type: 'mc', question: 'What is syntax analysis responsible for?', options: ['a) Detecting semantic errors', 'b) Analyzing language syntax rules', 'c) Generating machine code', 'd) Allocating memory'], answer: 'b) Analyzing language syntax rules' },
-            { type: 'mc', question: 'What does the Von Neumann architecture use to store both data and programs?', options: ['a) CPU registers', 'b) Cache memory', 'c) Main memory', 'd) Hard drive'], answer: 'c) Main memory' },
-            { type: 'mc', question: 'Which of the following is a characteristic of imperative programming languages?', options: ['a) Data abstraction', 'b) Late binding', 'c) Iteration', 'd) Inheritance'], answer: 'c) Iteration' },
-            { type: 'mc', question: 'What is the result of the compilation process?', options: ['a) Source code', 'b) Machine code', 'c) Assembly code', 'd) Bytecode'], answer: 'b) Machine code' }
-         ];
+            //        { type: 'tf', question: 'Increased ability to express ideas is one reason for studying concepts of programming languages.', answer: 'T' },
+            // { type: 'tf', question: 'COBOL is commonly used for scientific applications.', answer: 'F' },
+            // { type: 'tf', question: 'Reliability is the ease with which programs can be read and understood.', answer: 'F' },
+            // { type: 'tf', question: 'Exception handling refers to the testing for type errors.', answer: 'F' },
+            // { type: 'tf', question: 'Training programmers to use a language is considered a cost factor in language evaluation.', answer: 'T' },
+            // { type: 'tf', question: 'Portability is the ease with which programs can be moved from one implementation to another.', answer: 'T' },
+            // { type: 'tf', question: 'Functional languages primarily use variables and assignment statements.', answer: 'F' },
+            // { type: 'tf', question: 'Compilation involves translating programs into machine language.', answer: 'T' },
+            // { type: 'tf', question: 'The compilation process includes lexical analysis and syntax analysis.', answer: 'T' },
+            // { type: 'tf', question: 'Load module refers to a high-level language program.', answer: 'F' },
+            // { type: 'tf', question: 'Machine language is considered a high-level language.', answer: 'F' },
+            // { type: 'tf', question: 'Assembly language is easier for humans to understand than machine language.', answer: 'T' },
+            // { type: 'tf', question: 'High-level languages allow programmers to write programs closer to natural language.', answer: 'T' },
+            // { type: 'tf', question: 'Object-oriented programming focuses on data abstraction, inheritance, and late binding.', answer: 'T' },
+            // { type: 'tf', question: 'Von Neumann architecture stores data and programs in memory.', answer: 'T' },
+            // { type: 'tf', question: 'In imperative languages, iteration and assignment statements are central features.', answer: 'T' },
+            // { type: 'tf', question: 'Compilation generates machine code from source code.', answer: 'T' },
+            // { type: 'tf', question: 'Readability and writability are important criteria for language evaluation.', answer: 'T' },
+            // { type: 'tf', question: 'Systems programming requires languages that prioritize efficiency.', answer: 'T' },
+            // // Multiple Choice Questions
+            // { type: 'mc', question: 'What is one of the key reasons for studying the concepts of programming languages?', options: ['a) Increased ability to learn new languages', 'b) Decreased computational power', 'c) Reduced cost of hardware', 'd) Simplified user interfaces'], answer: 'a) Increased ability to learn new languages' },
+            // { type: 'mc', question: 'Which programming domain is specifically mentioned as requiring large numbers of floating-point computations?', options: ['a) Business applications', 'b) Artificial intelligence', 'c) Scientific applications', 'd) Systems programming'], answer: 'c) Scientific applications' },
+            // { type: 'mc', question: 'Which language is typically used for business applications according to the document?', options: ['a) LISP', 'b) COBOL', 'c) Fortran', 'd) C'], answer: 'b) COBOL' },
+            // { type: 'mc', question: 'In the context of programming domains, which language is associated with artificial intelligence?', options: ['a) Java', 'b) Python', 'c) LISP', 'd) C++'], answer: 'c) LISP' },
+            // { type: 'mc', question: 'Which programming domain needs efficiency because of continuous use?', options: ['a) Web Software', 'b) Systems programming', 'c) Business applications', 'd) AI programming'], answer: 'b) Systems programming' },
+            // { type: 'mc', question: 'What is a crucial factor when evaluating programming languages for reliability?', options: ['a) Cost', 'b) Portability', 'c) Readability', 'd) Writability'], answer: 'c) Readability' },
+            // { type: 'mc', question: 'What is syntax analysis responsible for?', options: ['a) Detecting semantic errors', 'b) Analyzing language syntax rules', 'c) Generating machine code', 'd) Allocating memory'], answer: 'b) Analyzing language syntax rules' },
+            // { type: 'mc', question: 'What does the Von Neumann architecture use to store both data and programs?', options: ['a) CPU registers', 'b) Cache memory', 'c) Main memory', 'd) Hard drive'], answer: 'c) Main memory' },
+            // { type: 'mc', question: 'Which of the following is a characteristic of imperative programming languages?', options: ['a) Data abstraction', 'b) Late binding', 'c) Iteration', 'd) Inheritance'], answer: 'c) Iteration' },
+            // { type: 'mc', question: 'What is the result of the compilation process?', options: ['a) Source code', 'b) Machine code', 'c) Assembly code', 'd) Bytecode'], answer: 'b) Machine code' },
         
-                let questions = [...originalQuestions];
-                let currentQuestionIndex = 0;
-                let userAnswers = [];
-                let randomizeQuestions = true;
         
-                function toggleRandomize() {
-                    randomizeQuestions = !randomizeQuestions;
-                    document.getElementById('randomizeIcon').classList.toggle('inactive', !randomizeQuestions);
-                }
         
-                function updateValue(spanId, value) {
-                    document.getElementById(spanId).textContent = value;
-                }
         
-                function startExam() {
-                    const selectedTFCount = parseInt(document.getElementById('tfCount').value);
-                    const selectedMCCount = parseInt(document.getElementById('mcCount').value);
+        //new
+
+        // True/False Questions
+{ type: 'tf', question: 'Data types and structures are part of the evaluation criteria for readability.', answer: 'T' },
+{ type: 'tf', question: 'The von Neumann architecture is the prevalent computer architecture around which most programming languages are developed.', answer: 'T' },
+{ type: 'tf', question: 'Readability in programming languages refers to how easily the programs can be read and understood.', answer: 'T' },
+{ type: 'tf', question: 'Functional programming languages use iteration as their main means of making computations.', answer: 'F' },
+{ type: 'tf', question: 'Orthogonality in a programming language refers to having a relatively small set of primitive constructs that can be combined in a relatively small number of ways.', answer: 'T' },
+{ type: 'tf', question: 'Markup languages like XHTML and XML are primarily used for specifying the layout of information in web documents.', answer: 'T' },
+{ type: 'tf', question: 'Type checking is a process to ensure the reliability of a programming language by testing for type errors.', answer: 'T' },
+{ type: 'tf', question: 'Pure interpretation of programs involves translating the programs directly into machine language.', answer: 'F' },
+{ type: 'tf', question: 'The cost criterion for evaluating a programming language includes the training required for programmers to use the language.', answer: 'T' },
+{ type: 'tf', question: 'Exception handling is a feature that improves the reliability of a programming language by intercepting run-time errors and taking corrective measures.', answer: 'T' },
+{ type: 'tf', question: 'In imperative programming languages, the central features include variables, assignment statements, and iteration.', answer: 'T' },
+{ type: 'tf', question: 'Logic programming languages are based on applying functions to given parameters.', answer: 'F' },
+{ type: 'tf', question: 'Object-oriented programming languages typically include features such as data abstraction, inheritance, and late binding.', answer: 'T' },
+{ type: 'tf', question: 'The evaluation criterion of writability in programming languages is about how easily the language can be used to create programs.', answer: 'T' },
+{ type: 'tf', question: 'COBOL is primarily used in scientific applications due to its efficiency with floating point computations.', answer: 'F' },
+{ type: 'tf', question: 'A preprocessor processes a program immediately after the program is compiled.', answer: 'F' },
+{ type: 'tf', question: 'Reliability in programming languages is defined as conformance to specifications.', answer: 'T' },
+{ type: 'tf', question: 'Business applications typically produce reports and use decimal numbers and characters.', answer: 'T' },
+{ type: 'tf', question: 'The presence of adequate facilities for defining data structures improves the readability of a programming language.', answer: 'T' },
+{ type: 'tf', question: 'Machine languages are considered high-level languages.', answer: 'F' },
+
+// Multiple Choice Questions
+{ type: 'mc', question: 'In the context of programming domains, which language is associated with artificial intelligence?', options: ['a) Java', 'b) Python', 'c) LISP', 'd) C++'], answer: 'c) LISP' },
+{ type: 'mc', question: 'Which programming language is primarily used for systems programming?', options: ['a) COBOL', 'b) LISP', 'c) C', 'd) Java'], answer: 'c) C' },
+{ type: 'mc', question: 'Which of the following criteria is not included in the evaluation of programming languages?', options: ['a) Readability', 'b) Writability', 'c) Portability', 'd) Connectivity'], answer: 'd) Connectivity' },
+{ type: 'mc', question: 'Which type of programming language is based on the von Neumann architecture?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Markup'], answer: 'a) Imperative' },
+{ type: 'mc', question: 'In which programming language paradigm are rules specified in no particular order?', options: ['a) Object-oriented', 'b) Functional', 'c) Logic', 'd) Imperative'], answer: 'c) Logic' },
+{ type: 'mc', question: 'Which evaluation criterion refers to the ease with which a language can be used to create programs?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'b) Writability' },
+{ type: 'mc', question: 'What does orthogonality in programming languages primarily improve?', options: ['a) Cost', 'b) Readability', 'c) Reliability', 'd) Portability'], answer: 'b) Readability' },
+{ type: 'mc', question: 'Which feature is associated with object-oriented programming?', options: ['a) Iteration', 'b) Type checking', 'c) Data abstraction', 'd) Protocol analysis'], answer: 'c) Data abstraction' },
+{ type: 'mc', question: 'What is the main use of markup languages like XHTML?', options: ['a) Systems programming', 'b) Scientific applications', 'c) Specifying the layout of web documents', 'd) Artificial intelligence'], answer: 'c) Specifying the layout of web documents' },
+{ type: 'mc', question: 'Which of the following is not a major method of implementing programming languages?', options: ['a) Compilation', 'b) Pure Interpretation', 'c) Hybrid Implementation', 'd) Code Generation'], answer: 'd) Code Generation' },
+{ type: 'mc', question: 'What is a key feature of imperative programming languages?', options: ['a) Functions', 'b) Rules', 'c) Variables', 'd) Inheritance'], answer: 'c) Variables' },
+{ type: 'mc', question: 'Which criterion evaluates the overall simplicity and ease of understanding of a programming language?', options: ['a) Writability', 'b) Reliability', 'c) Readability', 'd) Cost'], answer: 'c) Readability' },
+{ type: 'mc', question: 'Which programming language paradigm is known for data abstraction and polymorphism?', options: ['a) Functional', 'b) Object-oriented', 'c) Logic', 'd) Imperative'], answer: 'b) Object-oriented' },
+{ type: 'mc', question: 'Which type of programming language involves the main means of making computations by applying functions to given parameters?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Markup'], answer: 'b) Functional' },
+{ type: 'mc', question: 'What does the evaluation criterion of cost in programming languages include?', options: ['a) Training programmers', 'b) Type checking', 'c) Exception handling', 'd) Data abstraction'], answer: 'a) Training programmers' },
+{ type: 'mc', question: 'Which evaluation criterion refers to conformance to specifications in programming languages?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'c) Reliability' },
+{ type: 'mc', question: 'What is the major advantage of hybrid implementation systems?', options: ['a) Faster execution than pure interpretation', 'b) Direct machine code generation', 'c) Easier debugging', 'd) Immediate error detection'], answer: 'a) Faster execution than pure interpretation' },
+{ type: 'mc', question: 'Which programming language is primarily used for business applications?', options: ['a) FORTRAN', 'b) COBOL', 'c) LISP', 'd) C++'], answer: 'b) COBOL' },
+{ type: 'mc', question: 'What is the purpose of type checking in programming languages?', options: ['a) Enhancing readability', 'b) Testing for type errors', 'c) Improving portability', 'd) Reducing cost'], answer: 'b) Testing for type errors' },
+{ type: 'mc', question: 'Which feature is not typically associated with object-oriented programming languages?', options: ['a) Inheritance', 'b) Late binding', 'c) Iteration', 'd) Data abstraction'], answer: 'c) Iteration' }
+
+        ];
         
-                    let filteredQuestions = [
-                        ...originalQuestions.filter(q => q.type === 'tf').slice(0, selectedTFCount),
-                        ...originalQuestions.filter(q => q.type === 'mc').slice(0, selectedMCCount)
-                    ];
-        
-                    if (randomizeQuestions) {
-                        shuffleArray(filteredQuestions);
-                    }
-        
-                    questions = filteredQuestions;
-                    currentQuestionIndex = 0;
-                    userAnswers = [];
-        
-                    document.getElementById('homeContainer').style.display = 'none';
-                    document.getElementById('prevBtn').style.display = 'none';
-                    document.getElementById('nextBtn').style.display = 'inline-block';
-                    document.getElementById('submitBtn').style.display = 'inline-block';
-                    document.getElementById('restartExamBtn').style.display = 'inline-block';
-                    document.getElementById('randomizeIcon').style.display = 'none'; // Hide randomize icon
-                    displayQuestion(currentQuestionIndex);
-                }
-        
-                function displayQuestion(index) {
-            const questionContainer = document.getElementById('questionsContainer');
-            const questionHeader = document.getElementById('questionHeader');
-            questionContainer.innerHTML = '';
-        
-            const question = questions[index];
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'question active';
-        
-            // Add question number and total number of questions
-            questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
-        
-            questionDiv.innerHTML = `<p>${question.question}</p>`;
-        
-            if (question.type === 'tf') {
-                questionDiv.innerHTML += `
-                    <label style="" ><input type="radio" name="answer" value="T"> True</label><br>
-                    <label style="" ><input type="radio" name="answer" value="F"> False</label>
-                `;
-            } else if (question.type === 'mc') {
-                question.options.forEach(option => {
-                    questionDiv.innerHTML += `<label style="" ><input type="radio" name="answer" value="${option}"> ${option}</label><br>`;
-                });
-            }
-        
-            questionContainer.appendChild(questionDiv);
-        
-            if (userAnswers[index] !== undefined) {
-                document.querySelector(`input[name="answer"][value="${userAnswers[index]}"]`).checked = true;
-            }
-        
-            document.getElementById('prevBtn').style.display = index > 0 ? 'inline-block' : 'none';
-            document.getElementById('nextBtn').style.display = index < questions.length - 1 ? 'inline-block' : 'none';
+               
+        let questions = [...originalQuestions];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let randomizeQuestions = true;
+
+        function toggleRandomize() {
+            randomizeQuestions = !randomizeQuestions;
+            document.getElementById('randomizeIcon').classList.toggle('inactive', !randomizeQuestions);
         }
-        
-        
-                function nextQuestion() {
-                    saveAnswer();
-                    if (currentQuestionIndex < questions.length - 1) {
-                        currentQuestionIndex++;
-                        displayQuestion(currentQuestionIndex);
-                    }
-                }
-        
-                function prevQuestion() {
-                    saveAnswer();
-                    if (currentQuestionIndex > 0) {
-                        currentQuestionIndex--;
-                        displayQuestion(currentQuestionIndex);
-                    }
-                }
-        
-                function saveAnswer() {
-                    const selectedOption = document.querySelector('input[name="answer"]:checked');
-                    if (selectedOption) {
-                        userAnswers[currentQuestionIndex] = selectedOption.value;
-                    }
-                }
-        
-                function submitExam() {
-                    saveAnswer();
-        
-                    const resultContainer = document.getElementById('resultContainer');
-                    resultContainer.innerHTML = '';
-        
-                    let correctCount = 0;
-                    const scoreDiv = document.createElement('div');
-                    scoreDiv.className = 'result';
-                    scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
-                    resultContainer.appendChild(scoreDiv);
-                    questions.forEach((question, index) => {
-                        const isCorrect = userAnswers[index] === question.answer;
-                        if (isCorrect) correctCount++;
-        
-                        const resultDiv = document.createElement('div');
-                        resultDiv.className = 'result';
-                        resultDiv.innerHTML = `
-                            <p>${question.question}</p>
-                            <p>Your answer: ${userAnswers[index]}</p>
-                            <p>Correct answer: ${question.answer}</p>
-                        `;
-                        resultContainer.appendChild(resultDiv);
-                    });
-        
-                    document.getElementById('randomizeIcon').style.display = 'none';
-                    document.getElementById('restartExamBtn').style.display = 'inline-block';
-                    document.getElementById('questionsContainer').innerHTML = '';
-                    document.getElementById('prevBtn').style.display = 'none';
-                    document.getElementById('nextBtn').style.display = 'none';
-                    document.getElementById('submitBtn').style.display = 'none';
-                }
-        
-                function restartExam() {
-                    currentQuestionIndex = 0;
-                    userAnswers = [];
-                    document.getElementById('resultContainer').innerHTML = '';
-                    document.getElementById('homeContainer').style.display = 'block';
-                    document.getElementById('randomizeIcon').style.display = 'inline-block';
-                    document.getElementById('prevBtn').style.display = 'none';
-                    document.getElementById('nextBtn').style.display = 'none';
-                    document.getElementById('submitBtn').style.display = 'none';
-                    document.getElementById('restartExamBtn').style.display = 'none';
-                }
-        
-                function shuffleArray(array) {
-                    for (let i = array.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [array[i], array[j]] = [array[j], array[i]];
-                    }
-                }
-        
-                // Add this function to update the maximum value of the range inputs
-        function updateRangeMaxValues() {
-            document.getElementById('tfCount').max = originalQuestions.filter(q => q.type === 'tf').length;
-            document.getElementById('mcCount').max = originalQuestions.filter(q => q.type === 'mc').length;
+
+        function updateValue(spanId, value) {
+            document.getElementById(spanId).textContent = value;
         }
-        
-        // Update the range max values on page load and when restarting the exam
-        window.onload = updateRangeMaxValues;
+
+        function startExam() {
+            const selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            const selectedMCCount = parseInt(document.getElementById('mcCount').value);
+
+            let filteredQuestions = [
+                ...originalQuestions.filter(q => q.type === 'tf').slice(0, selectedTFCount),
+                ...originalQuestions.filter(q => q.type === 'mc').slice(0, selectedMCCount)
+            ];
+
+            if (randomizeQuestions) {
+                shuffleArray(filteredQuestions);
+            }
+
+            questions = filteredQuestions;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('restartExamBtn').style.display = 'inline-block';
+            document.getElementById('randomizeIcon').style.display = 'none'; // Hide randomize icon
+            displayQuestion(currentQuestionIndex);
+        }
+
+        function displayQuestion(index) {
+    const questionContainer = document.getElementById('questionsContainer');
+    const questionHeader = document.getElementById('questionHeader');
+    questionContainer.innerHTML = '';
+
+    const question = questions[index];
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question active';
+
+    questionHeader.textContent = `Question ${index + 1} of ${questions.length}`;
+    questionDiv.innerHTML = `<p>${question.question}</p>`;
+
+    if (question.type === 'tf') {
+        questionDiv.innerHTML += `
+            <label><input type="radio" name="answer" value="T"> True</label><br>
+            <label><input type="radio" name="answer" value="F"> False</label>
+        `;
+    } else if (question.type === 'mc') {
+        question.options.forEach(option => {
+            questionDiv.innerHTML += `<label><input type="radio" name="answer" value="${option}"> ${option}</label><br>`;
+        });
+    }
+
+    questionContainer.appendChild(questionDiv);
+
+    if (userAnswers[index] !== undefined) {
+        document.querySelector(`input[name="answer"][value="${userAnswers[index]}"]`).checked = true;
+    }
+
+    document.getElementById('prevBtn').style.display = index > 0 ? 'inline-block' : 'none';
+    document.getElementById('nextBtn').style.display = index < questions.length - 1 ? 'inline-block' : 'none';
+}
+
+
+        function nextQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+
+        function prevQuestion() {
+            saveAnswer();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+
+        function saveAnswer() {
+    const selectedOption = document.querySelector('input[name="answer"]:checked');
+    if (selectedOption) {
+        userAnswers[currentQuestionIndex] = selectedOption.value;
+    }
+}
+
+
+    function submitExam() {
+    saveAnswer();
+
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = '';
+
+    let correctCount = 0; // يجب أن يتم تعريف correctCount قبل حلقة forEach
+
+    questions.forEach((question, index) => {
+        const isCorrect = userAnswers[index] === question.answer;
+        if (isCorrect) correctCount++;
+
+        const resultDiv = document.createElement('div');
+        resultDiv.className = isCorrect ? 'correct-box' : 'error-box';
+        resultDiv.innerHTML = `
+            <p>${question.question}</p>
+            <p>Your answer: ${userAnswers[index]}</p>
+            <p>Correct answer: ${question.answer}</p>
+        `;
+        resultContainer.appendChild(resultDiv);
+    });
+
+    const scoreDiv = document.createElement('div'); // يجب إنشاء scoreDiv بعد حلقة forEach
+    scoreDiv.className = 'result';
+    scoreDiv.innerHTML = `<h2>Your score: ${correctCount} out of ${questions.length}</h2>`;
+
+    resultContainer.appendChild(scoreDiv);
+
+    document.getElementById('randomizeIcon').style.display = 'none';
+    document.getElementById('restartExamBtn').style.display = 'inline-block';
+    document.getElementById('questionsContainer').innerHTML = '';
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+}
+
+
+
+
+
         function restartExam() {
             currentQuestionIndex = 0;
             userAnswers = [];
@@ -338,18 +380,44 @@
             document.getElementById('nextBtn').style.display = 'none';
             document.getElementById('submitBtn').style.display = 'none';
             document.getElementById('restartExamBtn').style.display = 'none';
-        
-            // Update range inputs based on the number of questions available
-            updateRangeMaxValues();
-            
-            // Show number of remaining questions
         }
-        
-            </script>
-        </body>
-        </html>
-        
-        
-        
-        
-        
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Add this function to update the maximum value of the range inputs
+function updateRangeMaxValues() {
+    document.getElementById('tfCount').max = originalQuestions.filter(q => q.type === 'tf').length;
+    document.getElementById('mcCount').max = originalQuestions.filter(q => q.type === 'mc').length;
+}
+
+// Update the range max values on page load and when restarting the exam
+window.onload = updateRangeMaxValues;
+function restartExam() {
+    currentQuestionIndex = 0;
+    userAnswers = [];
+    document.getElementById('resultContainer').innerHTML = '';
+    document.getElementById('homeContainer').style.display = 'block';
+    document.getElementById('randomizeIcon').style.display = 'inline-block';
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('restartExamBtn').style.display = 'none';
+
+    // Update range inputs based on the number of questions available
+    updateRangeMaxValues();
+    
+    // Show number of remaining questions
+}
+
+    </script>
+</body>
+</html>
+
+
+
+
