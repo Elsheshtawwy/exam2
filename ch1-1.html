@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam for ch4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        label {
+            margin-top: 3px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resultContainer {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        .home-container {
+            text-align: center;
+        }
+        .slider-label {
+            display: block;
+            margin-top: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+
+        .footer a{
+            text-decoration: none;
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homeContainer" class="home-container">
+            <h1>Chapter 4</h1>
+            <label class="slider-label">Select number of True/False questions:</label>
+            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">1</span>
+            <br>
+            <label class="slider-label">Select number of Multiple Choice questions:</label>
+            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">1</span>
+            <br>
+            <button onclick="startExam()">Start the Exam</button>
+        </div>
+        <div id="questionsContainer"></div>
+        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        <div id="resultContainer"></div>
+    </div>
+    <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
+
+    <script>
+        const questions = [
+    // True/False Questions
+    
+  { "type": "tf", "question": "Thread library provides a programmer with API for creating and managing threads", "answer": "T" },
+  { "type": "tf", "question": "Invoking thread cancellation requests cancellation, but actual cancellation depends on thread state", "answer": "T" },
+  { "type": "tf", "question": "Thread Cancellation means that terminating a thread before it has finished", "answer": "T" },
+  { "type": "tf", "question": "Multithreading Model Many-to-One is Similar to Many-to-Many, except that it allows a user thread to be bound to kernel thread", "answer": "F" },
+  { "type": "tf", "question": "A signal handler is used to process signals", "answer": "T" },
+  { "type": "mc", "question": "In which Multithreading Model the number of threads per process sometimes restricted due to overhead?", "options": ["A) Many-to-One", "B) One-to-One", "C) One-to-Many", "D) Many-to-Many"], "answer": "B) One-to-One" },
+  { "type": "mc", "question": "Task parallelism means distributing … across cores, each … performing … operation", "options": ["A) Tasks, task, unique", "B) Threads, thread, unique", "C) Thread, threads, same", "D) All of the answers"], "answer": "B) Threads, thread, unique" },
+  { "type": "mc", "question": "In which Multithreading Model when One thread is blocking it will causes all to block?", "options": ["A) Many-to-Many", "B) One-to-Many", "C) One-to-One", "D) Many-to-One"], "answer": "D) Many-to-One" },
+  { "type": "mc", "question": "One of the following is not a Multithreading Model:", "options": ["A) One-to-Many", "B) Many-to-Many", "C) Many-to-One", "D) One-to-One"], "answer": "A) One-to-Many" },
+  { "type": "mc", "question": "In which Multithreading Model Few systems still currently use it?", "options": ["A) One-to-One", "B) Many-to-One", "C) One-to-Many", "D) Many-to-Many"], "answer": "B) Many-to-One" },
+  { "type": "mc", "question": "In which Multithreading Model ,Allows the operating system to create a sufficient number of kernel threads?", "options": ["A) One-to-Many", "B) Many-to-One", "C) Many-to-Many", "D) One-to-One"], "answer": "C) Many-to-Many" },
+  { "type": "mc", "question": "Multicore or multiprocessor systems putting pressure on programmers, challenges include:", "options": ["A) Balance", "B) Data dependency", "C) Testing and debugging", "D) Dividing activities", "E) All the answers"], "answer": "E) All the answers" },
+  { "type": "mc", "question": "Kernel threads is Supporting by the:", "options": ["A) Kernel", "B) User-level threads library", "C) System calls", "D) All of the answers"], "answer": "A) Kernel" },
+  { "type": "mc", "question": "Data parallelism means distributing subsets of the same … across … cores", "options": ["A) Data, multiple", "B) Variables, single", "C) Instructions, multiple", "D) Instructions, double"], "answer": "A) Data, multiple" },
+  { "type": "mc", "question": "In which Multithreading Model, creating a user-level thread creates a kernel thread?", "options": ["A) One-to-Many", "B) Many-to-One", "C) Many-to-Many", "D) One-to-One"], "answer": "D) One-to-One" },
+  { "type": "mc", "question": "In which Multithreading Model allows many user level threads to be mapped to many kernel threads?", "options": ["A) One-to-One", "B) Many-to-Many", "C) One-to-Many", "D) Many-to-One"], "answer": "B) Many-to-Many" },
+  { "type": "mc", "question": "The … implies a system can perform more than one task simultaneously. While the … supports more than one task making progress", "options": ["A) Concurrency, Parallelism", "B) Parallelism, multitasking", "C) Parallelism, Concurrency", "D) Concurrency, Timesharing"], "answer": "C) Parallelism, Concurrency" },
+  { "type": "mc", "question": "In the User threads, the management is done by the:", "options": ["A) Kernel", "B) System calls", "C) User-level threads library", "D) All of the answers"], "answer": "C) User-level threads library" }
+
+
+
+];
+
+
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let selectedTFCount = 0;
+        let selectedMCCount = 0;
+        let selectedQuestions = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRangeValues();
+            shuffleQuestions();
+        });
+
+        function updateRangeValues() {
+            const tfRange = document.getElementById('tfCount');
+            const mcRange = document.getElementById('mcCount');
+            tfRange.max = questions.filter(q => q.type === 'tf').length;
+            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        }
+
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function startExam() {
+            selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            selectedMCCount = parseInt(document.getElementById('mcCount').value);
+            selectedQuestions = getSelectedQuestions();
+            userAnswers = new Array(selectedQuestions.length).fill(null);
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            displayQuestion();
+        }
+
+        function getSelectedQuestions() {
+            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
+            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
+            return [...tfQuestions, ...mcQuestions];
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            const questionObj = selectedQuestions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question', 'active');
+            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+
+            if (questionObj.type === 'tf') {
+                questionElement.innerHTML += `
+                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
+                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
+                `;
+            } else if (questionObj.type === 'mc') {
+                questionObj.options.forEach(option => {
+                    questionElement.innerHTML += `
+                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
+                    `;
+                });
+            }
+            container.appendChild(questionElement);
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) selectedOption.checked = true;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                saveAnswer();
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                saveAnswer();
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+            }
+        }
+
+        function submitExam() {
+    saveAnswer();
+    let score = 0;
+    let correctAnswers = [];
+    selectedQuestions.forEach((question, index) => {
+        if (userAnswers[index] === question.answer) {
+            score++;
+        } else {
+            correctAnswers.push({
+                question: question.question,
+                correctAnswer: question.answer,
+                userAnswer: userAnswers[index] === null ? "No answer" : userAnswers[index]
+            });
+        }
+    });
+
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+
+    if (score === selectedQuestions.length) {
+        resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
+    } else {
+        correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
+            resultContainer.innerHTML += `
+                <div class="result">
+                    <p>Question: ${question}</p>
+                    <p>Correct Answer: ${correctAnswer}</p>
+                    <p>Your Answer: ${userAnswer}</p>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('homeContainer').style.display = 'block';
+}
+
+    </script>
+</body>
+</html>
+
+

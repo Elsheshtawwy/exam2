@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam for ch3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        label {
+            margin-top: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #resultContainer {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        .home-container {
+            text-align: center;
+        }
+        .slider-label {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homeContainer" class="home-container">
+            <h1>ِChapter3 Exam</h1>
+            <label class="slider-label">Select number of T/F questions:</label>
+            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">1</span>
+            <br>
+            <label class="slider-label">Select number of Multiple Choice questions:</label>
+            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">1</span>
+            <br>
+            <button onclick="startExam()">Start the Exam</button>
+        </div>
+        <div id="questionsContainer"></div>
+        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        <div id="resultContainer"></div>
+    </div>
+    <footer>Developed by Badr El sheshtawy</footer>
+
+    <script>
+      const questions = [
+    // T/F Questions
+  { "type": "tf", "question": "The consolidation phase in brainstorming should occur before ideas are generated.", "answer": "F" },
+  { "type": "tf", "question": "JAD sessions are designed to collect information from users.", "answer": "T" },
+  { "type": "tf", "question": "Protocol questions in an interview address the context of the project.", "answer": "T" },
+  { "type": "tf", "question": "During brainstorming, criticism helps in refining ideas.", "answer": "F" },
+  { "type": "tf", "question": "In JAD, a facilitator is not necessary for the success of the session.", "answer": "F" },
+  { "type": "tf", "question": "RE involves assessing the feasibility of the customer’s needs.", "answer": "T" },
+  { "type": "tf", "question": "The brainstorming leader should remain passive during the session.", "answer": "F" },
+  { "type": "tf", "question": "The primary goal of requirements analysis is to understand and define requirements in detail.", "answer": "T" },
+  { "type": "tf", "question": "Conducting a JAD session does not require any preparation.", "answer": "F" },
+  { "type": "tf", "question": "A formal agenda is crucial for the success of a JAD session.", "answer": "T" },
+  { "type": "tf", "question": "The leader in a brainstorming session should schedule the session and prepare the meeting room.", "answer": "T" },
+  { "type": "tf", "question": "The generation phase in brainstorming should discourage offbeat or unconventional ideas.", "answer": "F" },
+  { "type": "tf", "question": "RE activities include requirements specification and validation.", "answer": "T" },
+  { "type": "tf", "question": "JAD sessions are generally unstructured and casual.", "answer": "F" },
+  { "type": "tf", "question": "Requirements management involves continuous adjustment of requirements throughout the project lifecycle.", "answer": "T" },
+  { "type": "tf", "question": "Open-ended questions in an interview are designed to elicit detailed, specific responses.", "answer": "F" },
+  { "type": "tf", "question": "The role of the JAD facilitator is to help the group understand technical terms and jargon.", "answer": "T" },
+  { "type": "tf", "question": "The consolidation phase in brainstorming involves reviewing ideas for clarification.", "answer": "T" },
+  { "type": "tf", "question": "Interviewing is not an effective technique for small projects.", "answer": "F" },
+  { "type": "tf", "question": "RE activities aim to transform requirements into a functional operational system.", "answer": "T" },
+  { "type": "tf", "question": "A successful brainstorming session should produce a large quantity of ideas.", "answer": "T" },
+  { "type": "tf", "question": "The facilitator in a JAD session should take a leading role in discussions.", "answer": "F" },
+  { "type": "tf", "question": "Effective requirements management can prevent scope creep.", "answer": "T" },
+  { "type": "tf", "question": "Requirements engineering involves activities such as elicitation, analysis, specification, validation, and management.", "answer": "T" },
+  { "type": "tf", "question": "Requirements elicitation is the process of defining the requirements of a system after the system has been developed.", "answer": "F" },
+  { "type": "tf", "question": "Requirements validation ensures that the requirements accurately reflect the needs of the stakeholders.", "answer": "T" },
+  { "type": "tf", "question": "The main goal of requirements management is to identify and eliminate requirements changes during the project lifecycle.", "answer": "F" },
+  { "type": "tf", "question": "Requirements specification involves documenting the requirements in a formal manner.", "answer": "T" },
+  { "type": "tf", "question": "Prototyping is not useful in the requirements elicitation phase because it does not provide a tangible representation of requirements.", "answer": "F" },
+  { "type": "tf", "question": "Interviews are a common technique used in requirements elicitation to gather information from stakeholders.", "answer": "T" },
+  { "type": "tf", "question": "Requirements analysis is performed after the system has been developed.", "answer": "F" },
+  { "type": "tf", "question": "The requirements traceability matrix is used to track the progress of system development.", "answer": "F" },
+  { "type": "tf", "question": "Surveys are an effective technique for collecting quantitative data from a large number of stakeholders.", "answer": "T" },
+  { "type": "tf", "question": "Document analysis is used to review existing documentation for relevant information during requirements elicitation.", "answer": "T" },
+  { "type": "tf", "question": "Requirements validation is the process of creating system prototypes to help stakeholders visualize requirements.", "answer": "F" },
+  { "type": "tf", "question": "A key characteristic of good requirements is that they are detailed and precise.", "answer": "T" },
+  { "type": "tf", "question": "The primary goal of requirements analysis is to understand and define the requirements in detail.", "answer": "T" },
+  { "type": "tf", "question": "The System Requirements Specification (SRS) outlines the overall objectives and scope of the system being developed.", "answer": "T" },
+  { "type": "tf", "question": "A requirements change control process is used to ignore changes to requirements during the project lifecycle.", "answer": "F" },
+  { "type": "tf", "question": "Joint Application Development (JAD) is used to gather feedback on a draft system design from stakeholders.", "answer": "T" },
+  { "type": "tf", "question": "Prototyping provides a tangible representation of requirements, which can help in validating them.", "answer": "T" },
+  { "type": "tf", "question": "Ambiguous and open-ended requirements are characteristics of good requirements.", "answer": "F" },
+  { "type": "tf", "question": "Involving end-users in the requirements validation process helps ensure the system meets user needs and expectations.", "answer": "T" },
+  { "type": "tf", "question": "A primary benefit of using prototypes in requirements elicitation is that they guarantee a perfect system design.", "answer": "F" },
+  { "type": "tf", "question": "Requirements management involves controlling and monitoring changes to requirements throughout the project lifecycle.", "answer": "T" },
+  { "type": "tf", "question": "The primary goal of requirements elicitation is to document the final system design.", "answer": "F" },
+  { "type": "tf", "question": "A primary challenge of using surveys for requirements gathering is the potential for low response rates and incomplete data.", "answer": "T" },
+  { "type": "tf", "question": "A requirements specification document is created during the requirements validation phase.", "answer": "F" },
+  { "type": "tf", "question": "The purpose of requirements traceability is to ensure all requirements are linked to their corresponding design and test cases.", "answer": "T" },
+  { "type": "tf", "question": "Brainstorming is used for generating a wide range of ideas and solutions during requirements elicitation.", "answer": "T" },
+  { "type": "tf", "question": "Probing questions are used to explore and expand on a topic during an interview.", "answer": "T" },
+  { "type": "tf", "question": "The System Design Document serves as a basis for system design and development.", "answer": "F" },
+  { "type": "tf", "question": "Requirements validation ensures that requirements are complete, feasible, and aligned with stakeholders' needs.", "answer": "T" },
+  { "type": "mc", "question": "Which RE activity ensures the requirements align with stakeholders' needs?", "options": ["A) Requirements elicitation", "B) Requirements specification", "C) Requirements validation", "D) Requirements management"], "answer": "C) Requirements validation" },
+  { "type": "mc", "question": "What is the role of the leader in a brainstorming session?", "options": ["A) Generate ideas", "B) Keep the session focused", "C) Validate requirements", "D) Record all ideas"], "answer": "B) Keep the session focused" },
+  { "type": "mc", "question": "Which of the following is not a phase of conducting an interview?", "options": ["A) Identifying candidates", "B) Preparing for an interview", "C) Following up", "D) Generation phase"], "answer": "D) Generation phase" },
+  { "type": "mc", "question": "What should be done if not enough ideas are generated during a brainstorming session?", "options": ["A) Criticize the ideas generated", "B) Stop the meeting and continue later", "C) Move to the next phase", "D) Discard all ideas"], "answer": "B) Stop the meeting and continue later" },
+  { "type": "mc", "question": "What is the main purpose of a JAD session?", "options": ["A) To generate system prototypes", "B) To identify and define system requirements", "C) To develop system design", "D) To test the system"], "answer": "B) To identify and define system requirements" },
+  { "type": "mc", "question": "Who is usually the first person to be interviewed in the requirements elicitation process?", "options": ["A) System user", "B) Project manager", "C) Project sponsor", "D) Developer"], "answer": "C) Project sponsor" },
+  { "type": "mc", "question": "What type of questions address the context of the project?", "options": ["A) Open-ended", "B) Protocol", "C) Close-ended", "D) Leading"], "answer": "B) Protocol" },
+  { "type": "mc", "question": "Which RE activity involves transforming requirements into a functional system?", "options": ["A) Requirements elicitation", "B) Requirements specification", "C) Requirements validation", "D) Requirements management"], "answer": "D) Requirements management" },
+  { "type": "mc", "question": "What should be the focus during the generation phase of brainstorming?", "options": ["A) Criticizing ideas", "B) Generating as many ideas as possible", "C) Organizing ideas", "D) Prioritizing ideas"], "answer": "B) Generating as many ideas as possible" },
+  { "type": "mc", "question": "Which RE activity involves assessing the feasibility of the customer’s needs?", "options": ["A) Requirements elicitation", "B) Requirements specification", "C) Requirements validation", "D) Requirements management"], "answer": "A) Requirements elicitation" },
+  { "type": "mc", "question": "Who usually records the ideas during a brainstorming session?", "options": ["A) The leader", "B) The facilitator", "C) One designated person", "D) All participants"], "answer": "C) One designated person" },
+  { "type": "mc", "question": "What is the purpose of requirements validation?", "options": ["A) To develop system prototypes", "B) To ensure requirements are correct, complete, and feasible", "C) To implement the system design", "D) To generate new requirements"], "answer": "B) To ensure requirements are correct, complete, and feasible" },
+  { "type": "mc", "question": "During which phase of brainstorming are unconventional ideas encouraged?", "options": ["A) Preparation", "B) Generation", "C) Consolidation", "D) Criticism"], "answer": "B) Generation" },
+  { "type": "mc", "question": "What is the final step in conducting an interview?", "options": ["A) Reviewing the goals", "B) Summarizing the interview", "C) Ending the interview", "D) Preparing the meeting room"], "answer": "C) Ending the interview" },
+  { "type": "mc", "question": "Which technique allows people to suggest ideas in an atmosphere free of criticism?", "options": ["A) Interviewing", "B) JAD sessions", "C) Brainstorming", "D) Surveys"], "answer": "C) Brainstorming" },
+  { "type": "mc", "question": "What is the role of the facilitator in a JAD session?", "options": ["A) Generate ideas", "B) Keep session on track and follow the agenda", "C) Summarize the session", "D) Implement the system"], "answer": "B) Keep session on track and follow the agenda" },
+  { "type": "mc", "question": "Which phase in brainstorming involves reviewing ideas for clarification?", "options": ["A) Preparation", "B) Generation", "C) Consolidation", "D) Criticism"], "answer": "C) Consolidation" },
+  { "type": "mc", "question": "Which type of question encourages unconstrained answers?", "options": ["A) Open-ended", "B) Protocol", "C) Close-ended", "D) Leading"], "answer": "A) Open-ended" },
+  { "type": "mc", "question": "Who should you start with when identifying candidates for interviews?", "options": ["A) System user", "B) Project manager", "C) Project sponsor", "D) Developer"], "answer": "C) Project sponsor" },
+  { "type": "mc", "question": "Which RE activity involves specifying the solution unambiguously?", "options": ["A) Requirements elicitation", "B) Requirements specification", "C) Requirements validation", "D) Requirements management"], "answer": "B) Requirements specification" },
+  { "type": "mc", "question": "What is the main focus of the JAD sessions?", "options": ["A) To develop system prototypes", "B) To identify and define system requirements", "C) To test the system", "D) To implement the system"], "answer": "B) To identify and define system requirements" },
+  { "type": "mc", "question": "What is the purpose of the generation phase in brainstorming?", "options": ["A) To criticize ideas", "B) To organize ideas", "C) To generate a large number of ideas", "D) To prioritize ideas"], "answer": "C) To generate a large number of ideas" },
+  { "type": "mc", "question": "Which phase in interviewing involves summarizing and rephrasing to improve understanding?", "options": ["A) Identifying candidates", "B) Preparing for an interview", "C) Conducting the interview", "D) Following up"], "answer": "C) Conducting the interview" },
+  { "type": "mc", "question": "What is a characteristic of effective requirements management?", "options": ["A) Static and unchanging", "B) Continuous adjustment", "C) Immediate implementation", "D) Focus on coding"], "answer": "B) Continuous adjustment" },
+  { "type": "mc", "question": "During which phase of JAD is the post-session report prepared?", "options": ["A) Conducting the session", "B) Following up", "C) Preparation", "D) Implementation"], "answer": "B) Following up" },
+  { "type": "mc", "question": "What is the primary goal of the requirements elicitation phase?", "options": ["A) Developing system prototypes", "B) Understanding and gathering requirements", "C) Validating requirements", "D) Implementing the system"], "answer": "B) Understanding and gathering requirements" },
+  { "type": "mc", "question": "Which type of question is typically used at the end of an interview?", "options": ["A) Open-ended", "B) Protocol", "C) Close-ended", "D) Leading"], "answer": "C) Close-ended" },
+  { "type": "mc", "question": "What is the purpose of the brainstorming session's consolidation phase?", "options": ["A) Generate new ideas", "B) Criticize and refine ideas", "C) Organize and prioritize ideas", "D) Develop system prototypes"], "answer": "C) Organize and prioritize ideas" },
+  { "type": "mc", "question": "Which RE activity involves validating the specification?", "options": ["A) Requirements elicitation", "B) Requirements specification", "C) Requirements validation", "D) Requirements management"], "answer": "C) Requirements validation" },
+  { "type": "mc", "question": "What is a common outcome of a successful JAD session?", "options": ["A) Increased scope creep", "B) Clear and agreed-upon requirements", "C) Implementation of the system", "D) Development of system prototypes"], "answer": "B) Clear and agreed-upon requirements" },
+  { "type": "mc", "question": "What should be done if a brainstorming session generates too few ideas?", "options": ["A) Criticize the existing ideas", "B) End the session permanently", "C) Stop and continue later", "D) Discard all ideas"], "answer": "C) Stop and continue later" },
+  { "type": "mc", "question": "Who is responsible for keeping the process visible during an interview?", "options": ["A) Interviewee", "B) Interviewer", "C) Project manager", "D) System user"], "answer": "B) Interviewer" },
+  { "type": "mc", "question": "What is the primary role of the leader in a brainstorming session?", "options": ["A) Generate ideas", "B) Validate requirements", "C) Keep the session focused", "D) Record all ideas"], "answer": "C) Keep the session focused" },
+  { "type": "mc", "question": "Which of the following is not a phase of the JAD process?", "options": ["A) Conducting the session", "B) Following up", "C) Coding and implementation", "D) Preparation"], "answer": "C) Coding and implementation" },
+  { "type": "mc", "question": "Which type of question should be used to encourage detailed responses?", "options": ["A) Open-ended", "B) Protocol", "C) Close-ended", "D) Leading"], "answer": "A) Open-ended" },
+  { "type": "mc", "question": "Who usually initiates the brainstorming session with a general statement of the problem?", "options": ["A) Project manager", "B) Session leader", "C) System user", "D) JAD facilitator"], "answer": "B) Session leader" },
+  { "type": "mc", "question": "Which phase in a JAD session involves keeping the group focused and on track?", "options": ["A) Preparation", "B) Conducting the session", "C) Following up", "D) Implementation"], "answer": "B) Conducting the session" },
+  { "type": "mc", "question": "What is a common activity during the requirements specification phase?", "options": ["A) Validating requirements", "B) Developing system prototypes", "C) Specifying the solution unambiguously", "D) Implementing the system"], "answer": "C) Specifying the solution unambiguously" }
+];
+
+
+
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let selectedTFCount = 0;
+        let selectedMCCount = 0;
+        let selectedQuestions = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRangeValues();
+            shuffleQuestions();
+        });
+
+        function updateRangeValues() {
+            const tfRange = document.getElementById('tfCount');
+            const mcRange = document.getElementById('mcCount');
+            tfRange.max = questions.filter(q => q.type === 'tf').length;
+            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        }
+
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function startExam() {
+            selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            selectedMCCount = parseInt(document.getElementById('mcCount').value);
+            selectedQuestions = getSelectedQuestions();
+            userAnswers = new Array(selectedQuestions.length).fill(null);
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            displayQuestion();
+        }
+
+        function getSelectedQuestions() {
+            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
+            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
+            return [...tfQuestions, ...mcQuestions];
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            const questionObj = selectedQuestions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question', 'active');
+            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+
+            if (questionObj.type === 'tf') {
+                questionElement.innerHTML += `
+                    <label style="display:block;"><input type="radio" name="answer" value="T"> T</label>
+                    <label style="display:block;"><input type="radio" name="answer" value="F"> F</label>
+                `;
+            } else if (questionObj.type === 'mc') {
+                questionObj.options.forEach(option => {
+                    questionElement.innerHTML += `
+                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
+                    `;
+                });
+            }
+            container.appendChild(questionElement);
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) selectedOption.checked = T;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                saveAnswer();
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                saveAnswer();
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+            }
+        }
+
+        function submitExam() {
+            saveAnswer();
+            let score = 0;
+            let correctAnswers = [];
+            selectedQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score++;
+                } else {
+                    correctAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
+                }
+            });
+
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+
+            if (score === selectedQuestions.length) {
+                resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
+            } else {
+                correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
+                    resultContainer.innerHTML += `
+                        <div class="result">
+                            <p>Question: ${question}</p>
+                            <p>Correct Answer: ${correctAnswer}</p>
+                            <p>Your Answer: ${userAnswer}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('homeContainer').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
+

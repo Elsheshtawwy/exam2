@@ -1,363 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>programming language</title>
+    <title>Operating System</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        .header {
+            width: 100%;
             padding: 20px;
-            background-color: #f0f8ff;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        .question {
-            display: none;
-        }
-        .question.active {
-            display: block;
-        }
-        label {
-            margin-top: 3px;
-        }
-        button {
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
-            padding: 15px 20px;
+            text-align: center;
+            font-size: 26px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 80px; /* Margin to avoid overlap with header */
+        }
+
+        .chapters, .tests {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chapter-btn, .test-btn {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+            text-decoration: none;
         }
-        button:hover {
-            background-color: #45a049;
+
+        .chapter-btn:hover, .test-btn:hover {
+            background-color: #0056b3;
         }
-        #resultContainer {
+
+        .footer {
             margin-top: 20px;
-        }
-        .result {
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
+            font-size: 14px;
             color: #555;
-        }
-        .home-container {
             text-align: center;
         }
-        .slider-label {
-            display: block;
-            margin-top: 20px;
+
+        .footer a{
+            text-decoration: none;
+            font-size: 16px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .chapter-btn, .test-btn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="header">Operating System</div>
     <div class="container">
-        <div id="homeContainer" class="home-container">
-            <h1>programming language Exam</h1>
-            <label class="slider-label">Select number of True/False questions:</label>
-            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
-            <span id="tfCountValue">1</span>
-            <br>
-            <label class="slider-label">Select number of Multiple Choice questions:</label>
-            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
-            <span id="mcCountValue">1</span>
-            <br>
-            <button onclick="startExam()">Start the Exam</button>
+        <div id="chaptersContainer" class="chapters">
+            <a href="./ch1-1.html"><button class="chapter-btn" data-chapter="ch1">ch4</button></a>
+            <a href="./ch1-2.html"><button class="chapter-btn" data-chapter="ch1">ch5</button></a>
+            <a href="./ch1-3.html"><button class="chapter-btn" data-chapter="ch1">6th-QUIZ</button></a>
+            <a href="./ch1-4.html"><button class="chapter-btn" data-chapter="ch1">7th-QUIZ</button></a>
+            <!-- <button class="chapter-btn" data-chapter="ch2">ch2</button>
+            <button class="chapter-btn" data-chapter="ch3">ch3</button>
+            <button class="chapter-btn" data-chapter="ch4">ch4</button>
+            <button class="chapter-btn" data-chapter="ch5">ch5</button>
+            <button class="chapter-btn" data-chapter="ch6">ch6</button>
+            <button class="chapter-btn" data-chapter="ch7">ch7</button> -->
         </div>
-        <div id="questionsContainer"></div>
-        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
-        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
-        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
-        <div id="resultContainer"></div>
+        <!-- <div id="testsContainer" class="tests hidden">
+            <a href="#" id="test1" class="test-btn" data-test="1">Exam 1</a>
+            <a href="#" id="test2" class="test-btn" data-test="2">Exam 2</a>
+            <a href="#" id="test3" class="test-btn" data-test="3">Exam 3</a>
+            <a href="#" id="test4" class="test-btn" data-test="4">Exam 4</a>
+        </div> -->
     </div>
-    <footer>Developed by Badr El sheshtawy</footer>
+    <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
 
     <script>
-const questions = [
-    // True/False Questions
-    { type: 'tf', question: 'Increased ability to express ideas is one reason for studying concepts of programming languages.', answer: 'T' },
-    { type: 'tf', question: 'COBOL is commonly used for scientific applications.', answer: 'F' },
-    { type: 'tf', question: 'Reliability is the ease with which programs can be read and understood.', answer: 'F' },
-    { type: 'tf', question: 'Data types and structures are part of the evaluation criteria for readability.', answer: 'T' },
-    { type: 'tf', question: 'Exception handling refers to the testing for type errors.', answer: 'F' },
-    { type: 'tf', question: 'Training programmers to use a language is considered a cost factor in language evaluation.', answer: 'T' },
-    { type: 'tf', question: 'Portability is the ease with which programs can be moved from one implementation to another.', answer: 'T' },
-    { type: 'tf', question: 'Functional languages primarily use variables and assignment statements.', answer: 'F' },
-    { type: 'tf', question: 'Compilation involves translating programs into machine language.', answer: 'T' },
-    { type: 'tf', question: 'The compilation process includes lexical analysis and syntax analysis.', answer: 'T' },
-    { type: 'tf', question: 'Load module refers to a high-level language program.', answer: 'F' },
-    { type: 'tf', question: 'Machine language is considered a high-level language.', answer: 'F' },
-    { type: 'tf', question: 'Assembly language is easier for humans to understand than machine language.', answer: 'T' },
-    { type: 'tf', question: 'High-level languages allow programmers to write programs closer to natural language.', answer: 'T' },
-    { type: 'tf', question: 'Object-oriented programming focuses on data abstraction, inheritance, and late binding.', answer: 'T' },
-    { type: 'tf', question: 'Von Neumann architecture stores data and programs in memory.', answer: 'T' },
-    { type: 'tf', question: 'In imperative languages, iteration and assignment statements are central features.', answer: 'T' },
-    { type: 'tf', question: 'Compilation generates machine code from source code.', answer: 'T' },
-    { type: 'tf', question: 'Readability and writability are important criteria for language evaluation.', answer: 'T' },
-    { type: 'tf', question: 'Systems programming requires languages that prioritize efficiency.', answer: 'T' },
-    { type: 'tf', question: 'Web software uses a combination of markup, scripting, and general-purpose languages.', answer: 'T' },
-    { type: 'tf', question: 'LISP is an example of a logic programming language.', answer: 'F' },
-    { type: 'tf', question: 'Exception handling helps intercept runtime errors and take corrective measures.', answer: 'T' },
-    { type: 'tf', question: 'COBOL is widely used in business applications.', answer: 'T' },
-    { type: 'tf', question: 'Hybrid implementation systems combine features of compilers and interpreters.', answer: 'T' },
-    { type: 'tf', question: 'Scientific applications require a large number of floating point computations and often use Fortran.', answer: 'T' },
-    { type: 'tf', question: 'Writability in programming languages is the ease with which a language can be used to create programs.', answer: 'T' },
-    { type: 'tf', question: 'Type checking ensures that operations are performed on compatible data types.', answer: 'T' },
-    { type: 'tf', question: 'Pure interpretation directly translates programs into machine language.', answer: 'F' },
-    { type: 'tf', question: 'Orthogonality in programming languages means a large set of primitive constructs.', answer: 'F' },
-    { type: 'tf', question: 'Aliasing refers to the presence of two or more distinct referencing methods for the same memory location.', answer: 'T' },
-    { type: 'tf', question: 'The von Neumann architecture is characterized by the separation of memory and CPU.', answer: 'F' },
-    { type: 'tf', question: 'Data abstraction involves the ability to define complex structures and ignore details.', answer: 'T' },
-    { type: 'tf', question: 'Business applications often produce reports and use decimal numbers.', answer: 'T' },
-    { type: 'tf', question: 'Compilation is generally faster than pure interpretation.', answer: 'T' },
-    { type: 'tf', question: 'The Fetch-execute-cycle is part of the compilation process.', answer: 'F' },
-    { type: 'tf', question: 'Fortran is a language used primarily in artificial intelligence applications.', answer: 'F' },
-    { type: 'tf', question: 'Logic programming languages, like Prolog, use rule-based computation.', answer: 'T' },
-    { type: 'tf', question: 'The cost of training programmers is not considered in the language evaluation criteria.', answer: 'F' },
-    { type: 'tf', question: 'The readability of a programming language does not affect its overall simplicity.', answer: 'F' },
-    { type: 'tf', question: 'The semantic analysis phase in compilation generates intermediate code.', answer: 'F' },
-    { type: 'tf', question: 'Functional languages compute by applying functions to parameters.', answer: 'T' },
-    { type: 'tf', question: 'Portability in a programming language affects its applicability across different systems.', answer: 'T' },
-    { type: 'tf', question: 'The late 1970s saw a shift from process-oriented to data-oriented programming methodologies.', answer: 'T' },
-    { type: 'tf', question: 'Imperative languages focus primarily on functions and parameters.', answer: 'F' },
-    { type: 'tf', question: 'Hybrid implementation systems interpret high-level language programs directly.', answer: 'F' },
-    { type: 'tf', question: 'Lexical analysis in compilation converts source program characters into lexical units.', answer: 'T' },
-    { type: 'tf', question: 'Object-oriented programming does not support inheritance.', answer: 'F' },
-    { type: 'tf', question: 'Machine languages are human-readable and easy to write.', answer: 'F' },
-    { type: 'tf', question: 'Pure interpretation often requires more space compared to compiled programs.', answer: 'T' },
-    { type: 'tf', question: 'The ultimate total cost of a programming language includes factors such as training and maintenance.', answer: 'T' },
-    { type: 'tf', question: 'LISP is primarily used for systems programming due to its efficiency.', answer: 'F' },
-    { type: 'tf', question: 'Better control structures were a major focus in programming methodologies during the late 1960s.', answer: 'T' },
-    { type: 'tf', question: 'Generality in a programming language refers to its applicability to a narrow range of applications.', answer: 'F' },
-    { type: 'tf', question: 'Data abstraction was a key feature in object-oriented programming methodologies of the mid-1980s.', answer: 'T' },
-    { type: 'tf', question: 'Markup languages are used to specify the layout of information in web documents.', answer: 'T' },
-    { type: 'tf', question: 'Machine language programs are executed directly by the computer’s hardware.', answer: 'T' },
-    { type: 'tf', question: 'The presence of adequate facilities for defining data structures is part of writability evaluation.', answer: 'T' },
-    { type: 'tf', question: 'Aliasing can lead to errors if different references modify the same memory location.', answer: 'T' },
-    { type: 'tf', question: 'The Fetch-execute-cycle describes the sequence of actions performed by the CPU to execute instructions.', answer: 'T' },
-    { type: 'tf', question: 'Exception handling does not improve the reliability of a programming language.', answer: 'F' },
-    { type: 'tf', question: 'The overall simplicity of a programming language does not affect its readability.', answer: 'F' },
-    { type: 'tf', question: 'High-level languages are not influenced by computer architecture.', answer: 'F' },
-    { type: 'tf', question: 'Compilation involves phases such as lexical analysis, syntax analysis, and code generation.', answer: 'T' },
-    { type: 'tf', question: 'Object-oriented languages emphasize the use of functions over data abstraction.', answer: 'F' },
-    { type: 'tf', question: 'Readability and writability do not contribute to the cost of a programming language.', answer: 'F' },
-    { type: 'tf', question: 'The von Neumann architecture has a single storage structure for both instructions and data.', answer: 'T' },
-    { type: 'tf', question: 'Artificial intelligence applications manipulate symbols rather than numbers.', answer: 'T' },
-    { type: 'tf', question: 'Preprocessors expand embedded macros before program compilation.', answer: 'T' },
-    { type: 'tf', question: 'COBOL is not suitable for business applications due to its lack of support for decimal numbers.', answer: 'F' },
-    { type: 'tf', question: 'Orthogonality in programming languages allows for a combination of a small set of constructs in many ways.', answer: 'T' },
-    { type: 'tf', question: 'Reliability in a programming language ensures that it conforms to its specifications.', answer: 'T' },
-    { type: 'tf', question: 'Portability is not a significant factor in the cost of maintaining programs.', answer: 'F' },
-    { type: 'tf', question: 'Imperative languages do not use assignment statements as a central feature.', answer: 'F' },
-    { type: 'tf', question: 'The presence of two distinct referencing methods for the same memory location is known as aliasing.', answer: 'T' },
-    { type: 'tf', question: 'Exception handling is crucial for dealing with runtime errors in programming languages.', answer: 'T' },
-    { type: 'tf', question: 'Compilation results in the immediate execution of programs.', answer: 'F' },
-    { type: 'tf', question: 'Memory in the von Neumann architecture is divided into separate sections for data and instructions.', answer: 'F' },
-    { type: 'tf', question: 'High-level languages often require more space and have slower execution than machine languages.', answer: 'T' },
-    { type: 'tf', question: 'The object-oriented programming paradigm includes features like inheritance and polymorphism.', answer: 'T' },
-    { type: 'tf', question: 'Writability of a programming language does not depend on its support for abstraction.', answer: 'F' },
-    { type: 'tf', question: 'Systems programming languages need to be efficient due to their continuous use.', answer: 'T' },
-    { type: 'tf', question: 'Hybrid implementation systems can be slower than pure interpreters.', answer: 'F' },
-    { type: 'tf', question: 'Functional programming languages do not use iteration and assignment statements.', answer: 'T' },
-    { type: 'tf', question: 'The ease of reading and understanding programs is known as readability.', answer: 'T' },
-    { type: 'tf', question: 'Type checking is the process of verifying that operations in a program are performed on compatible data types.', answer: 'T' },
-    { type: 'tf', question: 'High-level programming languages were developed in the 1950s and early 1960s.', answer: 'T' },
-    { type: 'tf', question: 'The compilation process does not include syntax analysis.', answer: 'F' },
-    { type: 'tf', question: 'Exception handling can take corrective measures during runtime errors.', answer: 'T' },
-    { type: 'tf', question: 'Preprocessors are used to compile high-level language programs.', answer: 'F' },
-    { type: 'tf', question: 'Aliasing does not impact the reliability of a programming language.', answer: 'F' },
-    { type: 'tf', question: 'Portability measures how easily programs can be moved across different systems.', answer: 'T' },
-    { type: 'tf', question: 'Object-oriented programming was introduced in the 1980s.', answer: 'T' },
-    { type: 'tf', question: 'Readability is not affected by the complexity of language constructs.', answer: 'F' },
-    { type: 'tf', question: 'Artificial intelligence applications do not use symbols.', answer: 'F' },
-    { type: 'tf', question: 'The compilation process is faster than pure interpretation.', answer: 'T' },
-    { type: 'tf', question: 'Machine languages require high-level abstractions for coding.', answer: 'F' },
-    { type: 'tf', question: 'Business applications do not use decimal numbers and characters.', answer: 'F' },
-    { type: 'tf', question: 'Lexical analysis is the first phase in the compilation process.', answer: 'T' },
-    { type: 'tf', question: 'The reliability of a programming language does not impact its total cost.', answer: 'F' },
+        const links = {
+            'ch1': ['./ch1-1.html', './ch1-2.html', './ch1-3.html', './ch1-4.html'],
+            'ch2': ['./ch2-1.html', './ch2-2.html', './ch2-3.html', './ch2-4.html'],
+            'ch3': ['./ch3-1.html', './ch3-2.html', './ch3-3.html', './ch3-4.html'],
+            'ch4': ['./ch4-1.html', './ch4-2.html', './ch4-3.html', './ch4-4.html'],
+            'ch5': ['./ch5-1.html', './ch5-2.html', './ch5-3.html', './ch5-4.html'],
+            'ch6': ['./ch6-1.html', './ch6-2.html', './ch6-3.html', './ch6-4.html'],
+            'ch7': ['./ch7-1.html', './ch7-2.html', './ch7-3.html', './ch7-4.html']
+        };
 
-  { type: 'mc', question: 'What is one of the key reasons for studying the concepts of programming languages?', options: ['a) Increased ability to learn new languages', 'b) Decreased computational power', 'c) Reduced cost of hardware', 'd) Simplified user interfaces'], answer: 'a) Increased ability to learn new languages' },
-  { type: 'mc', question: 'Which programming domain is specifically mentioned as requiring large numbers of floating-point computations?', options: ['a) Business applications', 'b) Artificial intelligence', 'c) Scientific applications', 'd) Systems programming'], answer: 'c) Scientific applications' },
-  { type: 'mc', question: 'Which language is typically used for business applications according to the document?', options: ['a) LISP', 'b) COBOL', 'c) Fortran', 'd) C'], answer: 'b) COBOL' },
-  { type: 'mc', question: 'In the context of programming domains, which language is associated with artificial intelligence?', options: ['a) Java', 'b) Python', 'c) LISP', 'd) C++'], answer: 'c) LISP' },
-  { type: 'mc', question: 'Which programming domain needs efficiency because of continuous use?', options: ['a) Web Software', 'b) Systems programming', 'c) Business applications', 'd) Artificial intelligence'], answer: 'b) Systems programming' },
-  { type: 'mc', question: 'Which language is primarily used for systems programming?', options: ['a) C', 'b) Fortran', 'c) COBOL', 'd) Java'], answer: 'a) C' },
-  { type: 'mc', question: 'Which programming domain includes a collection of languages such as XHTML, PHP, and Java?', options: ['a) Scientific applications', 'b) Business applications', 'c) Web Software', 'd) Systems programming'], answer: 'c) Web Software' },
-  { type: 'mc', question: 'What is one of the most important criteria for evaluating programming languages?', options: ['a) Number of developers', 'b) Readability', 'c) Market share', 'd) Licensing costs'], answer: 'b) Readability' },
-  { type: 'mc', question: 'Which criterion involves the ease with which programs can be read and understood?', options: ['a) Writability', 'b) Reliability', 'c) Cost', 'd) Readability'], answer: 'd) Readability' },
-  { type: 'mc', question: 'What does the criterion of writability refer to?', options: ['a) Ease of learning a language', 'b) Conformance to specifications', 'c) Ease of creating programs', 'd) Cost of running programs'], answer: 'c) Ease of creating programs' },
-  { type: 'mc', question: 'Which of the following refers to the conformance to specifications?', options: ['a) Writability', 'b) Reliability', 'c) Readability', 'd) Cost'], answer: 'b) Reliability' },
-  { type: 'mc', question: 'Which criterion is associated with the ultimate total cost of using a programming language?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'd) Cost' },
-  { type: 'mc', question: 'Which aspect of readability refers to a manageable set of features and constructs?', options: ['a) Orthogonality', 'b) Overall simplicity', 'c) Control statements', 'd) Data types and structures'], answer: 'b) Overall simplicity' },
-  { type: 'mc', question: 'What does orthogonality in programming languages mean?', options: ['a) A large number of primitive constructs', 'b) A set of constructs combined in a limited number of ways', 'c) The presence of control statements', 'd) Flexibility in syntax'], answer: 'b) A set of constructs combined in a limited number of ways' },
-  { type: 'mc', question: 'What is the importance of syntax considerations in readability?', options: ['a) Ensuring code compiles', 'b) Managing variable scope', 'c) Defining data structures', 'd) Making identifiers flexible and meaningful'], answer: 'd) Making identifiers flexible and meaningful' },
-  { type: 'mc', question: 'Which evaluation criterion involves a small number of primitives and rules for combining them?', options: ['a) Readability', 'b) Writability', 'c) Reliability', 'd) Cost'], answer: 'a) Readability' },
-  { type: 'mc', question: 'Which feature of writability allows the definition and use of complex structures or operations?', options: ['a) Simplicity', 'b) Orthogonality', 'c) Support for abstraction', 'd) Expressivity'], answer: 'c) Support for abstraction' },
-  { type: 'mc', question: 'What does expressivity in writability entail?', options: ['a) A set of convenient ways of specifying operations', 'b) Reducing the number of keywords', 'c) Increasing the number of language features', 'd) Simplifying control structures'], answer: 'a) A set of convenient ways of specifying operations' },
-  { type: 'mc', question: 'What does type checking help ensure in terms of reliability?', options: ['a) Correctness of data types', 'b) Flexibility of syntax', 'c) Speed of execution', 'd) Cost reduction'], answer: 'a) Correctness of data types' },
-  { type: 'mc', question: 'What is the role of exception handling in programming languages?', options: ['a) Compiling code efficiently', 'b) Intercepting run-time errors and taking corrective measures', 'c) Improving readability', 'd) Reducing memory usage'], answer: 'b) Intercepting run-time errors and taking corrective measures' },
-  { type: 'mc', question: 'What does aliasing refer to in the context of programming languages?', options: ['a) Efficient compilation', 'b) Use of symbolic names', 'c) Multiple references to the same memory location', 'd) Simplifying syntax'], answer: 'c) Multiple references to the same memory location' },
-  { type: 'mc', question: 'How does portability influence the evaluation of programming languages?', options: ['a) Enhances readability', 'b) Eases the movement of programs between implementations', 'c) Reduces execution time', 'd) Simplifies data structures'], answer: 'b) Eases the movement of programs between implementations' },
-  { type: 'mc', question: 'Which criterion involves the applicability to a wide range of applications?', options: ['a) Readability', 'b) Writability', 'c) Generality', 'd) Cost'], answer: 'c) Generality' },
-  { type: 'mc', question: 'What does well-definedness ensure in a programming language?', options: ['a) Enhanced readability', 'b) Flexibility in syntax', 'c) Completeness and precision of the language’s definition', 'd) Support for data abstraction'], answer: 'c) Completeness and precision of the language’s definition' },
-  { type: 'mc', question: 'What are the two major influences on language design mentioned in the document?', options: ['a) Hardware costs and market demand', 'b) Machine architecture and software development methodologies', 'c) Developer preferences and user requirements', 'd) Programming trends and economic factors'], answer: 'b) Machine architecture and software development methodologies' },
-  { type: 'mc', question: 'Which architecture is commonly referred to in the document for language development?', options: ['a) Harvard architecture', 'b) Von Neumann architecture', 'c) ARM architecture', 'd) RISC architecture'], answer: 'b) Von Neumann architecture' },
-  { type: 'mc', question: 'What determines the speed of a computer according to the von Neumann architecture?', options: ['a) Processor clock speed', 'b) Connection speed between memory and CPU', 'c) Size of the hard drive', 'd) Number of input/output ports'], answer: 'b) Connection speed between memory and CPU' },
-  { type: 'mc', question: 'Which software development methodology is associated with structured programming?', options: ['a) Object-oriented development', 'b) Data abstraction', 'c) Step-wise refinement', 'd) Machine efficiency'], answer: 'c) Step-wise refinement' },
-  { type: 'mc', question: 'What programming paradigm emerged in the middle 1980s?', options: ['a) Procedural programming', 'b) Object-oriented programming', 'c) Functional programming', 'd) Logic programming'], answer: 'b) Object-oriented programming' },
-  { type: 'mc', question: 'Which language category includes languages like C and Pascal?', options: ['a) Imperative', 'b) Functional', 'c) Logic', 'd) Object-oriented'], answer: 'a) Imperative' },
-  { type: 'mc', question: 'What is the primary means of computation in functional programming languages?', options: ['a) Rule-based logic', 'b) Applying functions to parameters', 'c) Data abstraction', 'd) Iteration and loops'], answer: 'b) Applying functions to parameters' },
-  { type: 'mc', question: 'Which programming language is an example of a logic programming language?', options: ['a) Java', 'b) Scheme', 'c) Prolog', 'd) C++'], answer: 'c) Prolog' },
-  { type: 'mc', question: 'Which feature is central to object-oriented programming languages?', options: ['a) Iteration', 'b) Variable assignment', 'c) Data abstraction and inheritance', 'd) Pure functions'], answer: 'c) Data abstraction and inheritance' },
-  { type: 'mc', question: 'Which programming language is an example of an object-oriented language?', options: ['a) Fortran', 'b) C', 'c) Java', 'd) Pascal'], answer: 'c) Java' },
-  ];
-
-
-        let currentQuestionIndex = 0;
-        let userAnswers = [];
-        let selectedTFCount = 0;
-        let selectedMCCount = 0;
-        let selectedQuestions = [];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateRangeValues();
-            shuffleQuestions();
-        });
-
-        function updateRangeValues() {
-            const tfRange = document.getElementById('tfCount');
-            const mcRange = document.getElementById('mcCount');
-            tfRange.max = questions.filter(q => q.type === 'tf').length;
-            mcRange.max = questions.filter(q => q.type === 'mc').length;
-        }
-
-        function updateValue(id, value) {
-            document.getElementById(id).innerText = value;
-        }
-
-        function shuffleQuestions() {
-            // for (let i = questions.length - 1; i > 0; i--) {
-            //     const j = Math.floor(Math.random() * (i + 1));
-            //     [questions[i], questions[j]] = [questions[j], questions[i]];
-            // }
-        }
-
-        function startExam() {
-            selectedTFCount = parseInt(document.getElementById('tfCount').value);
-            selectedMCCount = parseInt(document.getElementById('mcCount').value);
-            selectedQuestions = getSelectedQuestions();
-            userAnswers = new Array(selectedQuestions.length).fill(null);
-            document.getElementById('homeContainer').style.display = 'none';
-            document.getElementById('prevBtn').style.display = 'inline-block';
-            document.getElementById('nextBtn').style.display = 'inline-block';
-            document.getElementById('submitBtn').style.display = 'inline-block';
-            displayQuestion();
-        }
-
-        function getSelectedQuestions() {
-            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
-            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
-            return [...tfQuestions, ...mcQuestions];
-        }
-
-        function displayQuestion() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-            const questionObj = selectedQuestions[currentQuestionIndex];
-            const questionElement = document.createElement('div');
-            questionElement.classList.add('question', 'active');
-            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
-
-            if (questionObj.type === 'tf') {
-                questionElement.innerHTML += `
-                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
-                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
-                `;
-            } else if (questionObj.type === 'mc') {
-                questionObj.options.forEach(option => {
-                    questionElement.innerHTML += `
-                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
-                    `;
+        document.querySelectorAll('.chapter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const chapter = this.getAttribute('data-chapter');
+                document.getElementById('testsContainer').classList.remove('hidden');
+                const chapterLinks = links[chapter];
+                document.querySelectorAll('.test-btn').forEach((testButton, index) => {
+                    testButton.textContent = chapter + '-' + (index + 1);
+                    testButton.href = chapterLinks[index];
                 });
-            }
-            container.appendChild(questionElement);
-
-            if (userAnswers[currentQuestionIndex] !== null) {
-                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
-                if (selectedOption) selectedOption.checked = true;
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestionIndex > 0) {
-                saveAnswer();
-                currentQuestionIndex--;
-                displayQuestion();
-            }
-        }
-
-        function nextQuestion() {
-            if (currentQuestionIndex < selectedQuestions.length - 1) {
-                saveAnswer();
-                currentQuestionIndex++;
-                displayQuestion();
-            }
-        }
-
-        function saveAnswer() {
-            const selectedOption = document.querySelector('input[name="answer"]:checked');
-            if (selectedOption) {
-                userAnswers[currentQuestionIndex] = selectedOption.value;
-            }
-        }
-
-        function submitExam() {
-            saveAnswer();
-            let score = 0;
-            let correctAnswers = [];
-            selectedQuestions.forEach((question, index) => {
-                if (userAnswers[index] === question.answer) {
-                    score++;
-                } else {
-                    correctAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
-                }
             });
-
-            const resultContainer = document.getElementById('resultContainer');
-            resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
-
-            if (score === selectedQuestions.length) {
-                resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
-            } else {
-                correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
-                    resultContainer.innerHTML += `
-                        <div class="result">
-                            <p>Question: ${question}</p>
-                            <p>Correct Answer: ${correctAnswer}</p>
-                            <p>Your Answer: ${userAnswer}</p>
-                        </div>
-                    `;
-                });
-            }
-
-            document.getElementById('prevBtn').style.display = 'none';
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('homeContainer').style.display = 'block';
-        }
+        });
     </script>
 </body>
 </html>
-
-

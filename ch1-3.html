@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6th-QUIZ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        label {
+            margin-top: 3px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resultContainer {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        .home-container {
+            text-align: center;
+        }
+        .slider-label {
+            display: block;
+            margin-top: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+
+        .footer a{
+            text-decoration: none;
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homeContainer" class="home-container">
+            <h1>6th-QUIZ</h1>
+            <label class="slider-label">Select number of True/False questions:</label>
+            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">1</span>
+            <br>
+            <label class="slider-label">Select number of Multiple Choice questions:</label>
+            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">1</span>
+            <br>
+            <button onclick="startExam()">Start the Exam</button>
+        </div>
+        <div id="questionsContainer"></div>
+        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        <div id="resultContainer"></div>
+    </div>
+    <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
+
+    <script>
+        const questions = [
+    // True/False Questions
+// Multiple Choice Questions
+  { "type": "mc", "question": "Scheduling Algorithm Optimization Criteria is:", "options": ["1. Max throughput", "2. Min turnaround time", "3. Max CPU utilization", "4. Min waiting time", "5. All of the answers", "6. Min response time"], "answer": "5. All of the answers" },
+  { "type": "mc", "question": "Waiting time is:", "options": ["1. Amount of time to execute a particular process", "2. Amount of time it takes from when a request was submitted until the first response is produced, not output", "3. Amount of time a process has been waiting in the ready queue", "4. # of processes that complete their execution per time unit", "5. Keeping the CPU as busy as possible"], "answer": "3. Amount of time a process has been waiting in the ready queue" },
+  { "type": "mc", "question": "Time it takes for the ...............to stop one process and start another running is called................", "options": ["Race time , IPC", "Dispatcher , Dispatch latency", "Seek Latency , Race condition.", "Access Latency , Dispatcher"], "answer": "Dispatcher , Dispatch latency" },
+  { "type": "mc", "question": "Response time is:", "options": ["1. Amount of time a process has been waiting in the ready queue", "2. Amount of time it takes from when a request was submitted until the first response is produced, not output", "3. Keeping the CPU as busy as possible", "4. Amount of time to execute a particular process", "5. # of processes that complete their execution per time unit"], "answer": "2. Amount of time it takes from when a request was submitted until the first response is produced, not output" },
+  { "type": "mc", "question": "Short-term scheduler selects from among the processes in ........... and allocates the ............... to one of them", "options": ["Running queue , Memory", "Waiting queue , CPU", "ready queue , CPU", "Shared section , Entry section"], "answer": "ready queue , CPU" },
+  { "type": "mc", "question": "CPU scheduling decisions may take place when a process:", "options": ["Switches from running to ready state", "Terminates", "All of the answers", "Switches from waiting to ready", "Switches from running to waiting state"], "answer": "All of the answers" },
+  { "type": "mc", "question": "....................followed by .......................", "options": ["Single thread processes , Multiple thread processes", "CPU burst , I/O burst", "Independent processes , Single thread processes", "Multiple thread processes , Single thread processes"], "answer": "CPU burst , I/O burst" },
+  { "type": "mc", "question": "Throughput is:", "options": ["Amount of time it takes from when a request was submitted until the first response is produced, not output", "Amount of time to execute a particular process", "# of processes that complete their execution per time unit", "Keeping the CPU as busy as possible", "Amount of time a process has been waiting in the ready queue"], "answer": "# of processes that complete their execution per time unit" },
+  { "type": "mc", "question": "In the Shortest-Job-First Scheduling The difficulty is:", "options": ["1. Knowing the length of the current CPU request", "2. None of the all", "3. Knowing the length of the next CPU request", "4. Knowing the length of the previous CPU request"], "answer": "3. Knowing the length of the next CPU request" },
+  { "type": "mc", "question": "Maximum CPU utilization obtained with ....................", "options": ["All the answers", "Single processing", "Multiprogramming", "Batching processes"], "answer": "Multiprogramming" },
+  { "type": "mc", "question": "Process execution consists of a cycle of..........and.........", "options": ["Single thread processes , Multiple thread processes", "Independent processes , Single thread processes", "Multiple thread processes , Single thread processes", "CPU execution , I/O wait"], "answer": "CPU execution , I/O wait" },
+  { "type": "mc", "question": "CPU utilization is:", "options": ["Amount of time it takes from when a request was submitted until the first response is produced, not output", "# of processes that complete their execution per time unit", "Amount of time to execute a particular process", "Keeping the CPU as busy as possible", "Amount of time a process has been waiting in the ready queue"], "answer": "Keeping the CPU as busy as possible" },
+  { "type": "mc", "question": "The Solution for Priority Scheduling an issue is called:", "options": ["1. Starvation", "2. Race condition", "3. Aging", "4. Deadlock"], "answer": "3. Aging" },
+  { "type": "mc", "question": "Turnaround time is:", "options": ["1. Amount of time it takes from when a request was submitted until the first response is produced, not output", "2. # of processes that complete their execution per time unit", "3. Amount of time to execute a particular process", "4. Amount of time a process has been waiting in the ready queue", "5. Keeping the CPU as busy as possible"], "answer": "3. Amount of time to execute a particular process" },
+  { "type": "mc", "question": "Switching context, switching to user mode and jumping to the proper location in the user program to restart that program is the ....................job", "options": ["CPU interrupt handler", "Dispatcher", "Kernel", "Long-term-scheduler"], "answer": "Dispatcher" },
+  { "type": "mc", "question": "In Priority Scheduling an issue called starvation that means:", "options": ["1. Low priority processes may never execute", "2. None of the all", "3. High priority processes may never execute", "4. Low priority processes never execute at all"], "answer": "1. Low priority processes may never execute" },
+  { "type": "mc", "question": "...............module gives control of the ............. to the process selected by the .....................", "options": ["Deadlock , I/O , Long-term-scheduler", "Dispatcher , CPU , Short-term scheduler", "Deadlock , Starvation , Blocked", "Dispatcher , Memory , Mid-term scheduler"], "answer": "Dispatcher , CPU , Short-term scheduler" },
+  { "type": "mc", "question": "Convoy effect is:", "options": ["1. Long process behind short process", "2. Short process in front of long process", "3. Short process behind long process", "4. Short process after long process"], "answer": "3. Short process behind long process" },
+  { "type": "tf", "question": "In RR scheduler each process gets a small unit of CPU time (time quantum q), After this time has elapsed, the process can not be preempted and added to the end of the ready queue.", "answer": "F" },
+  { "type": "tf", "question": "SJF algorithm is a special case of priority scheduling algorithm.", "answer": "T" },
+  { "type": "tf", "question": "Typically, in RR scheduler, the average turnaround is higher than SJF, but better response.", "answer": "T" },
+  { "type": "tf", "question": "SJF scheduling is frequently used in long term scheduling.", "answer": "T" },
+  { "type": "tf", "question": "The Non-Preemptive version in SJF scheduler is called shortest-remaining-time-first.", "answer": "F" }
+];
+
+
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let selectedTFCount = 0;
+        let selectedMCCount = 0;
+        let selectedQuestions = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRangeValues();
+            shuffleQuestions();
+        });
+
+        function updateRangeValues() {
+            const tfRange = document.getElementById('tfCount');
+            const mcRange = document.getElementById('mcCount');
+            tfRange.max = questions.filter(q => q.type === 'tf').length;
+            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        }
+
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function startExam() {
+            selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            selectedMCCount = parseInt(document.getElementById('mcCount').value);
+            selectedQuestions = getSelectedQuestions();
+            userAnswers = new Array(selectedQuestions.length).fill(null);
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            displayQuestion();
+        }
+
+        function getSelectedQuestions() {
+            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
+            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
+            return [...tfQuestions, ...mcQuestions];
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            const questionObj = selectedQuestions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question', 'active');
+            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+
+            if (questionObj.type === 'tf') {
+                questionElement.innerHTML += `
+                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
+                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
+                `;
+            } else if (questionObj.type === 'mc') {
+                questionObj.options.forEach(option => {
+                    questionElement.innerHTML += `
+                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
+                    `;
+                });
+            }
+            container.appendChild(questionElement);
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) selectedOption.checked = true;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                saveAnswer();
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                saveAnswer();
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+            }
+        }
+
+        function submitExam() {
+    saveAnswer();
+    let score = 0;
+    let correctAnswers = [];
+    selectedQuestions.forEach((question, index) => {
+        if (userAnswers[index] === question.answer) {
+            score++;
+        } else {
+            correctAnswers.push({
+                question: question.question,
+                correctAnswer: question.answer,
+                userAnswer: userAnswers[index] === null ? "No answer" : userAnswers[index]
+            });
+        }
+    });
+
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+
+    if (score === selectedQuestions.length) {
+        resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
+    } else {
+        correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
+            resultContainer.innerHTML += `
+                <div class="result">
+                    <p>Question: ${question}</p>
+                    <p>Correct Answer: ${correctAnswer}</p>
+                    <p>Your Answer: ${userAnswer}</p>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('homeContainer').style.display = 'block';
+}
+
+    </script>
+</body>
+</html>
+
+

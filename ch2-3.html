@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam for ch2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        label {
+            margin-top: 3px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #resultContainer {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        .home-container {
+            text-align: center;
+        }
+        .slider-label {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homeContainer" class="home-container">
+            <h1>Chapter2 Exam</h1>
+            <label class="slider-label">Select number of True/False questions:</label>
+            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">1</span>
+            <br>
+            <label class="slider-label">Select number of Multiple Choice questions:</label>
+            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">1</span>
+            <br>
+            <button onclick="startExam()">Start the Exam</button>
+        </div>
+        <div id="questionsContainer"></div>
+        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        <div id="resultContainer"></div>
+    </div>
+    <footer>Developed by Badr El sheshtawy</footer>
+
+    <script>
+       const questions = [
+    // True/False Questions
+    { type: 'tf', question: 'Requirements validation ensures that requirement statements will satisfy user needs.', answer: 'T' },
+    { type: 'tf', question: 'A system requirements specification describes the overall product.', answer: 'T' },
+    { type: 'tf', question: 'Problem reports can help identify areas for system improvement.', answer: 'T' },
+    { type: 'tf', question: 'Use cases are part of scenario analysis of user tasks.', answer: 'T' },
+    { type: 'tf', question: 'Business requirements include a statement of the organization\'s business objectives.', answer: 'T' },
+    { type: 'tf', question: 'The analyst should review designs, code, and test cases to ensure requirements were interpreted correctly.', answer: 'T' },
+    { type: 'tf', question: 'Questionnaires are used to gather requirements data.', answer: 'T' },
+    { type: 'tf', question: 'User representatives must review the requirements to determine correctness.', answer: 'T' },
+    { type: 'tf', question: 'Ambiguity in requirements results in imprecise and insufficiently detailed requirements.', answer: 'T' },
+    { type: 'tf', question: 'Traceability of requirements helps ensure each requirement originates from an authorized source.', answer: 'T' },
+    { type: 'tf', question: 'Requirements must be written in language appropriate to the user domain.', answer: 'T' },
+    { type: 'tf', question: 'Interviews with users can provide insights into required system capabilities.', answer: 'T' },
+    { type: 'tf', question: 'Requirements analysts can be dedicated specialists or team members with other job functions.', answer: 'T' },
+    { type: 'tf', question: 'The analyst should help create, review, and execute the project\'s requirements management plan.', answer: 'T' },
+    { type: 'tf', question: 'Reverse engineering of existing systems can reveal requirements.', answer: 'T' },
+    { type: 'tf', question: 'Requirements should not include implementation details.', answer: 'T' },
+    { type: 'tf', question: 'Ambiguous requirements lead to wasted time and incorrect solutions.', answer: 'T' },
+    { type: 'tf', question: 'Eliciting requirements involves proactive engagement with users.', answer: 'T' },
+    { type: 'tf', question: 'Business process analysis is a technique for gathering requirements.', answer: 'T' },
+    { type: 'tf', question: 'A requirement must be necessary and reflect real customer needs.', answer: 'T' },
+    { type: 'tf', question: 'Scenario analysis helps in identifying user tasks.', answer: 'T' },
+    { type: 'tf', question: 'Requirements analysis includes spotting vague and conflicting requirements.', answer: 'T' },
+    { type: 'tf', question: 'Requirements management is important throughout the software development life cycle.', answer: 'T' },
+    { type: 'tf', question: 'The analyst must understand users\' goals to define functional requirements.', answer: 'T' },
+    { type: 'tf', question: 'Effective requirements specifications facilitate system testing.', answer: 'T' },
+    // Multiple Choice Questions
+    { 
+    "type": "mc", 
+    "question": "Which characteristic ensures that each requirement fully describes the functionality to be delivered?", 
+    "options": ["a) Complete", "b) Correct", "c) Feasible", "d) Necessary"], 
+    "answer": "a) Complete" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Who determines the correctness of user requirements?", 
+    "options": ["a) Developers", "b) Users or their close surrogates", "c) Project managers", "d) Testers"], 
+    "answer": "b) Users or their close surrogates" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the role of a requirements analyst in a project?", 
+    "options": ["a) Developer", "b) Tester", "c) Communication middleman", "d) Project manager"], 
+    "answer": "c) Communication middleman" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is a primary activity performed by a requirements analyst?", 
+    "options": ["a) Writing code", "b) Testing software", "c) Defining business requirements", "d) Managing project timelines"], 
+    "answer": "c) Defining business requirements" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which of the following is a requirement gathering technique?", 
+    "options": ["a) Debugging", "b) Prototyping", "c) Code review", "d) System integration"], 
+    "answer": "b) Prototyping" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which characteristic of excellent requirements ensures that each requirement is possible to implement within the known capabilities and limitations of the system?", 
+    "options": ["a) Verifiable", "b) Prioritized", "c) Feasible", "d) Unambiguous"], 
+    "answer": "c) Feasible" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the purpose of assigning an implementation priority to each functional requirement?", 
+    "options": ["a) To indicate its correctness", "b) To indicate its feasibility", "c) To indicate how essential it is", "d) To indicate its completeness"], 
+    "answer": "c) To indicate how essential it is" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What should each requirement document according to the characteristic of being 'Necessary'?", 
+    "options": ["a) A capability that the developers need", "b) A capability that the customers really need", "c) A capability that the testers need", "d) A capability that the project managers need"], 
+    "answer": "b) A capability that the customers really need" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What should be done to ensure that requirement statements will satisfy user needs?", 
+    "options": ["a) Lead requirements validation", "b) Write code", "c) Conduct system integration", "d) Perform debugging"], 
+    "answer": "a) Lead requirements validation" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the first question to ask when defining business requirements?", 
+    "options": ["a) What is the budget?", "b) What is the timeline?", "c) Why are we undertaking this project?", "d) Who are the stakeholders?"], 
+    "answer": "c) Why are we undertaking this project?" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which technique is used to help users articulate the system capabilities they need?", 
+    "options": ["a) System integration", "b) Debugging", "c) Reverse engineering of existing systems", "d) Code review"], 
+    "answer": "c) Reverse engineering of existing systems" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which characteristic of excellent requirements ensures that all readers of a requirement statement arrive at a single, consistent interpretation?", 
+    "options": ["a) Feasible", "b) Unambiguous", "c) Verifiable", "d) Necessary"], 
+    "answer": "b) Unambiguous" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which activity involves looking for derived requirements and unstated requirements that customers seem to expect?", 
+    "options": ["a) Writing requirements specifications", "b) Analyzing requirements", "c) Managing requirements", "d) Leading requirements validation"], 
+    "answer": "b) Analyzing requirements" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the main responsibility of a requirements analyst?", 
+    "options": ["a) Writing code", "b) Testing software", "c) Gathering, analyzing, documenting, and validating the needs of the project stakeholders", "d) Managing project timelines"], 
+    "answer": "c) Gathering, analyzing, documenting, and validating the needs of the project stakeholders" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which activity does a requirements analyst perform to ensure that requirements were interpreted correctly?", 
+    "options": ["a) Writing code", "b) Conducting system integration", "c) Reviewing designs, code, and test cases", "d) Performing debugging"], 
+    "answer": "c) Reviewing designs, code, and test cases" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which source of requirements involves understanding the problems that users encounter with the current system?", 
+    "options": ["a) User questionnaires", "b) Observing users at work", "c) Problem reports and enhancement requests", "d) Scenario analysis of user tasks"], 
+    "answer": "c) Problem reports and enhancement requests" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which requirement characteristic ensures that it is possible to test or verify each requirement?", 
+    "options": ["a) Complete", "b) Feasible", "c) Verifiable", "d) Unambiguous"], 
+    "answer": "c) Verifiable" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the purpose of writing requirements specifications?", 
+    "options": ["a) To design the system", "b) To create test cases", "c) To express a shared understanding of the system", "d) To manage project timelines"], 
+    "answer": "c) To express a shared understanding of the system" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which activity involves conducting interviews, document analysis, and customer site visits?", 
+    "options": ["a) Writing requirements specifications", "b) Eliciting requirements", "c) Analyzing requirements", "d) Managing requirements"], 
+    "answer": "b) Eliciting requirements" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the primary function of a requirements analyst as a communication middleman?", 
+    "options": ["a) Managing project timelines", "b) Bridging the gap between customer notions and clear specifications", "c) Writing code", "d) Testing software"], 
+    "answer": "b) Bridging the gap between customer notions and clear specifications" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which source of requirements involves collecting data from potential users through surveys?", 
+    "options": ["a) Interviews", "b) Problem reports", "c) User questionnaires", "d) Observing users at work"], 
+    "answer": "c) User questionnaires" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the role of a requirements analyst in managing requirements?", 
+    "options": ["a) Writing code", "b) Testing software", "c) Reviewing and executing the project's requirements management plan", "d) Managing project timelines"], 
+    "answer": "c) Reviewing and executing the project's requirements management plan" 
+  },
+  { 
+    "type": "mc", 
+    "question": "What is the purpose of defining business requirements?", 
+    "options": ["a) To create test cases", "b) To write code", "c) To define the project's business objectives and the ultimate vision of what the system will be and do", "d) To manage project timelines"], 
+    "answer": "c) To define the project's business objectives and the ultimate vision of what the system will be and do" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which source of requirements involves deriving detailed software functional requirements from high-level system requirements?", 
+    "options": ["a) Interviews", "b) System requirements specifications", "c) User questionnaires", "d) Problem reports"], 
+    "answer": "b) System requirements specifications" 
+  },
+  { 
+    "type": "mc", 
+    "question": "Which requirement characteristic ensures that requirements are documented based on specific voice-of-the-customer input?", 
+    "options": ["a) Complete", "b) Correct", "c) Feasible", "d) Necessary"], 
+    "answer": "d) Necessary" 
+  },
+  ];
+
+
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let selectedTFCount = 0;
+        let selectedMCCount = 0;
+        let selectedQuestions = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRangeValues();
+            shuffleQuestions();
+        });
+
+        function updateRangeValues() {
+            const tfRange = document.getElementById('tfCount');
+            const mcRange = document.getElementById('mcCount');
+            tfRange.max = questions.filter(q => q.type === 'tf').length;
+            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        }
+
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function startExam() {
+            selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            selectedMCCount = parseInt(document.getElementById('mcCount').value);
+            selectedQuestions = getSelectedQuestions();
+            userAnswers = new Array(selectedQuestions.length).fill(null);
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            displayQuestion();
+        }
+
+        function getSelectedQuestions() {
+            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
+            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
+            return [...tfQuestions, ...mcQuestions];
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            const questionObj = selectedQuestions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question', 'active');
+            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+
+            if (questionObj.type === 'tf') {
+                questionElement.innerHTML += `
+                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
+                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
+                `;
+            } else if (questionObj.type === 'mc') {
+                questionObj.options.forEach(option => {
+                    questionElement.innerHTML += `
+                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
+                    `;
+                });
+            }
+            container.appendChild(questionElement);
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) selectedOption.checked = true;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                saveAnswer();
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                saveAnswer();
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+            }
+        }
+
+        function submitExam() {
+            saveAnswer();
+            let score = 0;
+            let correctAnswers = [];
+            selectedQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score++;
+                } else {
+                    correctAnswers.push({ question: question.question, correctAnswer: question.answer, userAnswer: userAnswers[index] });
+                }
+            });
+
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+
+            if (score === selectedQuestions.length) {
+                resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
+            } else {
+                correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
+                    resultContainer.innerHTML += `
+                        <div class="result">
+                            <p>Question: ${question}</p>
+                            <p>Correct Answer: ${correctAnswer}</p>
+                            <p>Your Answer: ${userAnswer}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('prevBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('homeContainer').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
+

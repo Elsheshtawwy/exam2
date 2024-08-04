@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7th-QUIZ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        label {
+            margin-top: 3px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resultContainer {
+            margin-top: 20px;
+        }
+        .result {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        .home-container {
+            text-align: center;
+        }
+        .slider-label {
+            display: block;
+            margin-top: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+
+        .footer a{
+            text-decoration: none;
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homeContainer" class="home-container">
+            <h1>7th-QUIZ</h1>
+            <label class="slider-label">Select number of True/False questions:</label>
+            <input type="range" id="tfCount" min="1" max="0" value="5" oninput="updateValue('tfCountValue', this.value)">
+            <span id="tfCountValue">1</span>
+            <br>
+            <label class="slider-label">Select number of Multiple Choice questions:</label>
+            <input type="range" id="mcCount" min="1" max="0" value="5" oninput="updateValue('mcCountValue', this.value)">
+            <span id="mcCountValue">1</span>
+            <br>
+            <button onclick="startExam()">Start the Exam</button>
+        </div>
+        <div id="questionsContainer"></div>
+        <button id="prevBtn" onclick="prevQuestion()" style="display: none;">Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" style="display: none;">Next</button>
+        <button id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        <div id="resultContainer"></div>
+    </div>
+    <div class="footer">Developed by <a href="https://t.me/BadrElsheshtawy" target="_blank">Badr Elsheshtawy</a></div>
+
+    <script>
+        const questions = [
+    // True/False Questions
+  { "type": "mc", "question": "The circular wait condition can be prevented by:", "options": ["Defining a linear ordering of resource types", "All of the mentioned", "Using thread", "Using pipes"], "answer": "Defining a linear ordering of resource types" },
+  
+  { "type": "mc", "question": "If graph contains a cycle then it means:", "options": ["A)If several instances per resource type, possibility of deadlock", "B)None of the mentioned", "C)If only one instance per resource type, then deadlock", "D)All of the mentioned", "E) A & C"], "answer": "E) A & C" },
+  
+  { "type": "mc", "question": "Which of the following condition is required for a deadlock to be possible?", "options": ["All of the mentioned", "No resource can be forcibly removed from a process holding it", "Mutual exclusion", "A process may hold allocated resources while awaiting assignment of other resources"], "answer": "All of the mentioned" },
+  
+  { "type": "mc", "question": "Each process utilizes a resource as follows:", "options": ["request, use, release", "use, release, request", "All the answers", "release, request, use"], "answer": "request, use, release" },
+  
+  { "type": "mc", "question": "Methods for Handling Deadlocks are:", "options": ["Ensure that the system will never enter a deadlock state", "Ignore the problem and pretend that deadlocks never occur in the system", "Allow the system to enter a deadlock state and then recover", "All of the mentioned"], "answer": "All of the mentioned" },
+  
+  { "type": "mc", "question": "If graph contains no cycles then it means:", "options": ["Possibility of deadlock", "Deadlock", "None of the mentioned", "No deadlock"], "answer": "No deadlock" },
+  
+  { "type": "mc", "question": "Deadlocks can be described more precisely in terms of a directed graph called:", "options": ["A system resource-allocation graph.", "A system deadlock-allocation graph.", "A system partition allocation graph.", "A system paging-allocation graph."], "answer": "A system resource-allocation graph." },
+  
+  { "type": "tf", "question": "In Deadlock Avoidance, it requires that the system has some additional a priori information available.", "answer": "T" },
+  
+  { "type": "tf", "question": "In Deadlock Avoidance, Simplest and most useful model requires that each process declare the minimum number of resources of each type that it may need.", "answer": "F" },
+  
+  { "type": "tf", "question": "Mutual Exclusion–not required for sharable resources (e.g., read-only files); must hold for non-sharable resources", "answer": "T" },
+  
+  { "type": "tf", "question": "Hold and Wait–must guarantee that whenever a process requests a resource, it does hold any other resources", "answer": "F" },
+  
+  { "type": "tf", "question": "The deadlock-avoidance algorithm dynamically examines the resource-allocation state to ensure that there can never be a circular-wait condition", "answer": "T" }
+];
+
+
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let selectedTFCount = 0;
+        let selectedMCCount = 0;
+        let selectedQuestions = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRangeValues();
+            shuffleQuestions();
+        });
+
+        function updateRangeValues() {
+            const tfRange = document.getElementById('tfCount');
+            const mcRange = document.getElementById('mcCount');
+            tfRange.max = questions.filter(q => q.type === 'tf').length;
+            mcRange.max = questions.filter(q => q.type === 'mc').length;
+        }
+
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+        }
+
+        function startExam() {
+            selectedTFCount = parseInt(document.getElementById('tfCount').value);
+            selectedMCCount = parseInt(document.getElementById('mcCount').value);
+            selectedQuestions = getSelectedQuestions();
+            userAnswers = new Array(selectedQuestions.length).fill(null);
+            document.getElementById('homeContainer').style.display = 'none';
+            document.getElementById('prevBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            displayQuestion();
+        }
+
+        function getSelectedQuestions() {
+            const tfQuestions = questions.filter(q => q.type === 'tf').slice(0, selectedTFCount);
+            const mcQuestions = questions.filter(q => q.type === 'mc').slice(0, selectedMCCount);
+            return [...tfQuestions, ...mcQuestions];
+        }
+
+        function displayQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            const questionObj = selectedQuestions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question', 'active');
+            questionElement.innerHTML = `<p>Question ${currentQuestionIndex + 1}: ${questionObj.question}</p>`;
+
+            if (questionObj.type === 'tf') {
+                questionElement.innerHTML += `
+                    <label style="display:block;"><input type="radio" name="answer" value="T"> True</label>
+                    <label style="display:block;"><input type="radio" name="answer" value="F"> False</label>
+                `;
+            } else if (questionObj.type === 'mc') {
+                questionObj.options.forEach(option => {
+                    questionElement.innerHTML += `
+                        <label style="display:block;"><input type="radio" name="answer" value="${option}"> ${option}</label>
+                    `;
+                });
+            }
+            container.appendChild(questionElement);
+
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOption = document.querySelector(`input[name="answer"][value="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOption) selectedOption.checked = true;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                saveAnswer();
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < selectedQuestions.length - 1) {
+                saveAnswer();
+                currentQuestionIndex++;
+                displayQuestion();
+            }
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = selectedOption.value;
+            }
+        }
+
+        function submitExam() {
+    saveAnswer();
+    let score = 0;
+    let correctAnswers = [];
+    selectedQuestions.forEach((question, index) => {
+        if (userAnswers[index] === question.answer) {
+            score++;
+        } else {
+            correctAnswers.push({
+                question: question.question,
+                correctAnswer: question.answer,
+                userAnswer: userAnswers[index] === null ? "No answer" : userAnswers[index]
+            });
+        }
+    });
+
+    const resultContainer = document.getElementById('resultContainer');
+    resultContainer.innerHTML = `<div class="result">You scored ${score} out of ${selectedQuestions.length}</div>`;
+
+    if (score === selectedQuestions.length) {
+        resultContainer.innerHTML += '<div class="result">Congratulations! You got a perfect score!</div>';
+    } else {
+        correctAnswers.forEach(({ question, correctAnswer, userAnswer }) => {
+            resultContainer.innerHTML += `
+                <div class="result">
+                    <p>Question: ${question}</p>
+                    <p>Correct Answer: ${correctAnswer}</p>
+                    <p>Your Answer: ${userAnswer}</p>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById('prevBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('homeContainer').style.display = 'block';
+}
+
+    </script>
+</body>
+</html>
+
+
